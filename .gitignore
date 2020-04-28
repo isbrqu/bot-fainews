@@ -1,7 +1,5 @@
 __pycache__/
-img/
-*.log
-*.urls
 .env
+ghostdriver.log
 testdupidupi.py
 
