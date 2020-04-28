@@ -1,0 +1,7 @@
+__pycache__/
+img/
+*.log
+*.urls
+.env
+testdupidupi.py
+
