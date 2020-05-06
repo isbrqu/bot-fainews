@@ -4,24 +4,32 @@
 from time import ctime, sleep
 from decouple import config
 from colorama import Fore, init
+from orator import DatabaseManager, Model
 
 from pedco import Pedco
 from faibot import Faibot
-from subject import Subject
 
-init(convert=True, autoreset=True)
-
-SUBJECT = [
-    Subject('calculo',     alias='Cálculo',     course='1891', forum='89531'),
-    Subject('estructuras', alias='Estructuras', course='241', forum='13023'),
-    Subject('ingles',      alias='Inglés',      course='665', forum='22060'),
-    Subject('computacion', alias='TC I',        course='1865', forum='88332'),
-    Subject('objetos',     alias='POO',         course='246', forum='197066'),
-]
+from models import Subject
+from models import Thread
+from models import BoardUrls
 
 if __name__ == '__main__':
+    
+    init(convert=True, autoreset=True)
+    Model.set_connection_resolver(DatabaseManager({
+        'mysql': {
+            'driver': 'mysql',
+            'host': config('DB_HOST'),
+            'database': config('DB_DATABASE'),
+            'user': config('DB_USER'),
+            'password': config('DB_PASSWORD'),
+            'prefix': '',
+        }
+    }))
     bot = Faibot()
     pedco = Pedco()
+    subjects = Subject.all()
+
     while True:
         try:
             print('iniciando sesión...')
@@ -31,41 +39,40 @@ if __name__ == '__main__':
                 sleep(120)
                 print('iniciando sesión...')
             print('sesión inicianda')
+
             while not pedco.in_login():
-                for subject in SUBJECT:
-                    
+                for subject in subjects:
+                    pedco.subject_id = subject.id
+
                     pedco.go(subject.course)
                     board = pedco.get_board()
-                    
-                    with open(f'records/{subject.name}.urls', encoding='utf-8', mode='r+') as urls:
-                        newurls = board.diffurl(urls.read().splitlines())
-                        if newurls:
-                            urls.writelines(newurls)
-                            for url in board.newurls:
-                                bot.send_url(subject.alias, url)
+                    urls = BoardUrls.where('subject_id', subject.id).lists('url')
+                    newurls = board.diffurl(urls)
+
+                    if newurls:
+                        BoardUrls.insert(newurls)
+                        for url in newurls:
+                            bot.send_url(subject.alias, url)
+                        print(Fore.GREEN + ctime() + ' - link/s en ' + subject.name)
 
                     pedco.go(subject.forum)
-                    thread = pedco.get_first_thread()
-                    newline = f'{thread.name} - {thread.url}'
+                    newthread = pedco.get_first_thread()
+                    oldthread = Thread.select('url').where('subject_id', subject.id).order_by('id', 'desc').first()
 
-                    with open(f'records/{subject.name}.log', encoding='utf-8', mode='r+') as log:
-                        oldline = log.readline().rstrip('\r\n')
-                        if newline != oldline:
-                            log.seek(0)
-                            content = log.read()
-                            log.seek(0)
-                            log.write(newline.rstrip('\r\n') + '\n' + content)
-                            bot.send_nov(subject.alias, thread.name, thread.url)
-                            pedco.go(thread.url)
-                            bot.send_photo(pedco.screenshot_article(subject.name))
-                            print(Fore.GREEN + ctime() + ' - novedad en ' + subject.name)
-                        else:
-                            print(ctime() + ' - nada nuevo en ' + subject.name)
+                    if not oldthread or newthread.url != oldthread.url:
+                        Thread.insert(newthread.get_data())
+                        bot.send_nov(subject.alias, newthread.name, newthread.url)
+                        pedco.go(newthread.url)
+                        img = pedco.screenshot_article(subject.name)
+                        bot.send_photo(img)
+                        print(Fore.GREEN + ctime() + ' - publicación en ' + subject.name)
+
+                    print(ctime() + ' - verificó ' + subject.name)
 
                 bot.check()
                 sleep(1800)
             print(Fore.YELLOW + 'la sesión expiró')
         except Exception as e:
-            # raise e
+            raise e
             print(Fore.RED + f'{ctime()} - {e}')
             sleep(120)

@@ -12,7 +12,7 @@ class Faibot(object):
 		self.bot = telegram.Bot(token=config('TELEGRAM_BOT_TOKEN'))
 		self.my_id = config('TELEGRAM_MY_CHAT')
 		self.group_id = config('TELEGRAM_GROUP_CHAT')
-		# self.group_id = self.my_id # with test
+		self.group_id = self.my_id # with test
 
 	def send_nov(self, alias, title, url):
 		title = escape(title)
@@ -35,28 +35,28 @@ class Faibot(object):
 		self.bot.send_message(chat_id=self.group_id, text=msg, parse_mode=telegram.ParseMode.MARKDOWN_V2)
 
 	def send_url(self, alias, url):
-		if 'youtu' in url[1]:
+		if 'youtu' in url['url']:
 			notice = 'entregado un video de youtube'
-		elif 'assign' in url[1]:
+		elif 'assign' in url['url']:
 			notice = 'asignado una entrega'
-		elif 'quiz' in url[1]:
+		elif 'quiz' in url['url']:
 			notice = 'creado un cuestionario'
-		elif 'book' in url[1]:
+		elif 'book' in url['url']:
 			notice = 'subido libro para ver/realizar'
-		elif 'page' in url[1]:
+		elif 'page' in url['url']:
 			notice = 'añadido una pagina con contenido a realizar o ver'
-		elif 'url' in url[1]:
+		elif 'url' in url['url']:
 			notice = 'añadido un enlace como rescurso'
-		elif 'resource' in url[1]:
+		elif 'resource' in url['url']:
 			notice = 'subido un archivo'
-		elif 'forum' in url[1]:
+		elif 'forum' in url['url']:
 			notice = 'habilitado un foro'
-		elif 'folder' in url[1]:
+		elif 'folder' in url['url']:
 			notice = 'añadido una carpeta'
 		else:
 			notice = None
-		name = escape(url[0])
-		url = escape(url[1])
+		name = escape(url['name'])
+		url = escape(url['url'])
 		if notice:
 			msg = f'*Materia*: {alias}\n\n*Descripción*: Se ha {notice}\n{name}\n\n_Link: {url}_'
 			self.send_group(msg)

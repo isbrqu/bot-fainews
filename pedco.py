@@ -15,7 +15,8 @@ class Pedco:
         options = webdriver.FirefoxOptions()
         options.add_argument('--headless')
         self.driver = webdriver.Firefox(options=options)
-        self.driver.set_window_size(1400,1000)
+        self.driver.set_window_size(1400, 1000)
+        self.subject_id = None
 
     def login(self, username=None, password=None):
         self.driver.get(URL_LOGIN)
@@ -43,10 +44,10 @@ class Pedco:
         return self.driver.title
 
     def get_board(self):
-        return Board(self.driver.find_element_by_id('region-main'))
+        return Board(self.driver.find_element_by_id('region-main'), self.subject_id)
 
     def get_first_thread(self):
-        return Thread(self.driver.find_element_by_css_selector('tr.discussion'))
+        return Thread(self.driver.find_element_by_css_selector('tr.discussion'), self.subject_id)
 
     def screenshot_article(self, name):
         article = self.driver.find_element_by_tag_name('article')
