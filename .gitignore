@@ -1,5 +1,5 @@
 __pycache__/
 .env
-geckodriver.log
-testdupidupi.py
+*.log
+test*.py
 

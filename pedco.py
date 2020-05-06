@@ -12,9 +12,7 @@ URL_MY = 'https://pedco.uncoma.edu.ar/my/'
 class Pedco:
     """docstring for Pedco"""
     def __init__(self):
-        options = webdriver.FirefoxOptions()
-        options.add_argument('--headless')
-        self.driver = webdriver.Firefox(options=options)
+        self.driver = webdriver.PhantomJS()
         self.driver.set_window_size(1400, 1000)
         self.subject_id = None
 
