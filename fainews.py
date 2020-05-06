@@ -18,12 +18,12 @@ if __name__ == '__main__':
     init(convert=True, autoreset=True)
     Model.set_connection_resolver(DatabaseManager({
         'mysql': {
-            'driver': 'mysql',
-            'host': config('DB_HOST'),
+            'driver':   'mysql',
+            'host':     config('DB_HOST'),
             'database': config('DB_DATABASE'),
-            'user': config('DB_USER'),
+            'user':     config('DB_USER'),
             'password': config('DB_PASSWORD'),
-            'prefix': '',
+            'prefix':   '',
         }
     }))
     bot = Faibot()
@@ -70,9 +70,10 @@ if __name__ == '__main__':
                     print(ctime() + ' - verificó ' + subject.name)
 
                 bot.check()
-                sleep(1800)
+                sleep(config('TIME_SLEEP', cast=int))
             print(Fore.YELLOW + 'la sesión expiró')
         except Exception as e:
-            raise e
+            if config('DEBUG', default=True, cast=bool):
+                raise e
             print(Fore.RED + f'{ctime()} - {e}')
             sleep(120)

@@ -12,7 +12,8 @@ class Faibot(object):
 		self.bot = telegram.Bot(token=config('TELEGRAM_BOT_TOKEN'))
 		self.my_id = config('TELEGRAM_MY_CHAT')
 		self.group_id = config('TELEGRAM_GROUP_CHAT')
-		self.group_id = self.my_id # with test
+		if config('DEBUG', default=True, cast=bool):
+			self.group_id = self.my_id
 
 	def send_nov(self, alias, title, url):
 		title = escape(title)
