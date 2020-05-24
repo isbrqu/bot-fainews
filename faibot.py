@@ -1,10 +1,9 @@
 import re
 import telegram
+from telegram.ParseMode import MARKDOWN_V2
 from decouple import config
 from datetime import datetime
-
-def escape(text):
-	return re.sub(r'([._*`{}\[\]()~>#|!?+=-])', r'\\\1', text)
+from utils import escape
 
 class Faibot(object):
 	"""docstring for Faibot"""
@@ -18,7 +17,8 @@ class Faibot(object):
 	def send_nov(self, alias, title, url):
 		title = escape(title)
 		url = escape(url)
-		self.send_group(f'*Materia*: {alias}\n\n*Descripción*: Posteo en Novedades\n{title}\n\n_Link: {url}_')
+        msg = f'*Materia*: {alias}\n\n*Descripción*: Posteo en Novedades\n{title}\n\n_Link: {url}_'
+		self.send_group()
 
 	def send_photo(self, path):
 		self.bot.send_photo(chat_id=self.group_id, photo=open(path, 'rb'))
@@ -28,12 +28,12 @@ class Faibot(object):
 
 	def send_me(self, msg, markdown=True):
 		if markdown:
-			self.bot.send_message(chat_id=self.my_id, text=msg, parse_mode=telegram.ParseMode.MARKDOWN_V2)
+			self.bot.send_message(chat_id=self.my_id, text=msg, parse_mode=MARKDOWN_V2)
 		else:
 			self.bot.send_message(chat_id=self.my_id, text=msg)
 
 	def send_group(self, msg):
-		self.bot.send_message(chat_id=self.group_id, text=msg, parse_mode=telegram.ParseMode.MARKDOWN_V2)
+		self.bot.send_message(chat_id=self.group_id, text=msg, parse_mode=MARKDOWN_V2)
 
 	def send_url(self, alias, url):
 		if 'youtu' in url['url']:
@@ -66,4 +66,4 @@ class Faibot(object):
 			self.send_me(msg)
 
 	def _send(self, chat_id, msg):
-		self.bot.send_message(chat_id=chat_id, text=msg, parse_mode=telegram.ParseMode.MARKDOWN_V2)
+		self.bot.send_message(chat_id=chat_id, text=msg, parse_mode=MARKDOWN_V2)
