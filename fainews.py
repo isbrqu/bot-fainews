@@ -25,7 +25,7 @@ if __name__ == '__main__':
             print('iniciando sesión...')
             while not pedco.login(username=config('PEDCO_USERNAME'), password=config('PEDCO_PASSWORD')):
                 print(Fore.RED + 'no se pudo iniciar sesión')
-                print('title: ' + pedco.get_title())
+                print('title: ' + pedco.title)
                 sleep(120)
                 print('iniciando sesión...')
             print('sesión inicianda')
@@ -35,7 +35,7 @@ if __name__ == '__main__':
                     pedco.subject = subject
 
                     pedco.go_course()
-                    board = pedco.get_board()
+                    board = pedco.board
                     urls = BoardUrls.where('subject_id', subject.id).lists('url')
                     newurls = board.diffurl(urls)
 
@@ -46,11 +46,11 @@ if __name__ == '__main__':
                         print(Fore.GREEN + ctime() + ' - link/s en ' + subject.name)
 
                     pedco.go_forum()
-                    newthread = pedco.get_first_thread()
+                    newthread = pedco.first_thread
                     oldthread = Thread.select('url').where('subject_id', subject.id).order_by('id', 'desc').first()
 
                     if not oldthread or newthread.url != oldthread.url:
-                        Thread.insert(newthread.get_data())
+                        Thread.insert(newthread.data)
                         bot.send_nov(subject.alias, newthread.name, newthread.url)
                         pedco.go(newthread.url)
                         img = pedco.screenshot_article(subject.name)

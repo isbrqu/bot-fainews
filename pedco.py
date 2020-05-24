@@ -14,20 +14,27 @@ class Pedco:
         self.driver.set_window_size(1400, 1000)
         self.subject = None
 
+    @property
+    def in_login(self):
+        return (self.driver.current_url == URL_LOGIN)
+
+    @property
+    def title(self):
+        return self.driver.title
+
     def login(self, username=None, password=None):
         self.driver.get(URL_LOGIN)
-        if username and password and self.driver.title == 'PEDCO: Entrar al sitio':
+        if username and password and self.title == 'PEDCO: Entrar al sitio':
             if not self.driver.find_elements_by_id('notice'):
                 self.driver.find_element_by_name('username').send_keys(username)
                 self.driver.find_element_by_name('password').send_keys(password)
                 self.driver.find_element_by_id('loginbtn').click()
             else:
                 self.my()
-        return not self.in_login()
+        return not self.in_login
 
     def my(self):
         self.driver.get(URL_MY)
-        return self.in_login()
 
     def go_course(self):
         self.driver.get(URL_COURSE % self.subject.course)
@@ -35,16 +42,12 @@ class Pedco:
     def go_forum(self):
         self.driver.get(URL_FORUM % self.subject.forum)
 
-    def in_login(self):
-        return (self.driver.current_url == URL_LOGIN)
-
-    def get_title(self):
-        return self.driver.title
-
-    def get_board(self):
+    @property
+    def board(self):
         return Board(self.driver.find_element_by_id('region-main'), self.subject.id)
 
-    def get_first_thread(self):
+    @property
+    def first_thread(self):
         return Thread(self.driver.find_element_by_css_selector('tr.discussion'), self.subject.id)
 
     def screenshot_article(self, name):

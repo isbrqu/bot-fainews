@@ -15,10 +15,8 @@ class Thread:
 		self.created = re.sub(r'\s{2,}', '', td[n+1].get_attribute('innerHTML'))
 		self.subject_id = subject_id
 
-	def __repr__(self):
-		return f'url: {self.url}, name: {self.name}, author: {self.author}, created: {self.created}, last_to_write: {self.last_to_write}, updated: {self.updated}'
-
-	def get_data(self):
+    @property
+	def data(self):
 		return {
 			'name': self.name, 
 			'url': self.url, 
@@ -28,3 +26,6 @@ class Thread:
 			'updated': self.updated, 
 			'subject_id': self.subject_id
 		}
+
+	def __repr__(self):
+		return f'url: {self.url}, name: {self.name}, author: {self.author}, created: {self.created}, last_to_write: {self.last_to_write}, updated: {self.updated}'
