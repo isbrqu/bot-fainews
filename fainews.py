@@ -32,9 +32,9 @@ if __name__ == '__main__':
 
             while not pedco.in_login():
                 for subject in subjects:
-                    pedco.subject_id = subject.id
+                    pedco.subject = subject
 
-                    pedco.go(subject.course)
+                    pedco.go_course()
                     board = pedco.get_board()
                     urls = BoardUrls.where('subject_id', subject.id).lists('url')
                     newurls = board.diffurl(urls)
@@ -45,7 +45,7 @@ if __name__ == '__main__':
                             bot.send_url(subject.alias, url)
                         print(Fore.GREEN + ctime() + ' - link/s en ' + subject.name)
 
-                    pedco.go(subject.forum)
+                    pedco.go_forum()
                     newthread = pedco.get_first_thread()
                     oldthread = Thread.select('url').where('subject_id', subject.id).order_by('id', 'desc').first()
 

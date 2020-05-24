@@ -5,14 +5,14 @@ from selenium import webdriver
 
 from thread import Thread
 from board import Board
-from utils import URL_LOGIN, URL_MY
+from utils import URL_LOGIN, URL_MY, URL_COURSE, URL_FORUM
 
 class Pedco:
     """docstring for Pedco"""
     def __init__(self):
         self.driver = webdriver.PhantomJS()
         self.driver.set_window_size(1400, 1000)
-        self.subject_id = None
+        self.subject = None
 
     def login(self, username=None, password=None):
         self.driver.get(URL_LOGIN)
@@ -29,9 +29,11 @@ class Pedco:
         self.driver.get(URL_MY)
         return self.in_login()
 
-    def go(self, url):
-        self.driver.get(url)
-        return self.in_login()
+    def go_course(self):
+        self.driver.get(URL_COURSE % self.subject.course)
+
+    def go_forum(self):
+        self.driver.get(URL_FORUM % self.subject.forum)
 
     def in_login(self):
         return (self.driver.current_url == URL_LOGIN)
@@ -40,10 +42,10 @@ class Pedco:
         return self.driver.title
 
     def get_board(self):
-        return Board(self.driver.find_element_by_id('region-main'), self.subject_id)
+        return Board(self.driver.find_element_by_id('region-main'), self.subject.id)
 
     def get_first_thread(self):
-        return Thread(self.driver.find_element_by_css_selector('tr.discussion'), self.subject_id)
+        return Thread(self.driver.find_element_by_css_selector('tr.discussion'), self.subject.id)
 
     def screenshot_article(self, name):
         article = self.driver.find_element_by_tag_name('article')
