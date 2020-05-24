@@ -53,7 +53,7 @@ if __name__ == '__main__':
                         Thread.insert(newthread.data)
                         bot.send_nov(subject.alias, newthread.name, newthread.url)
                         pedco.go(newthread.url)
-                        img = pedco.screenshot_article(subject.name)
+                        img = pedco.screenshot_article()
                         bot.send_photo(img)
                         print(Fore.GREEN + ctime() + ' - publicación en ' + subject.name)
 

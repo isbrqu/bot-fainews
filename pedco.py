@@ -53,7 +53,7 @@ class Pedco:
     def first_thread(self):
         return Thread(self.driver.find_element_by_css_selector('tr.discussion'), self.subject.id)
 
-    def screenshot_article(self, name):
+    def screenshot_article(self):
         article = self.driver.find_element_by_tag_name('article')
         location, size = article.location, article.size
         img = Image.open(BytesIO(self.driver.get_screenshot_as_png()))
@@ -63,6 +63,6 @@ class Pedco:
         bottom = location['y'] + size['height']
         img = img.crop((left, top, right, bottom))
         date_time = datetime.now().strftime('%m-%d-%H-%M-%S')
-        path = f'img/{name}-{date_time}.png'
+        path = f'img/{self.subject.name}-{date_time}.png'
         img.save(path)
         return path
