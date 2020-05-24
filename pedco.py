@@ -5,9 +5,7 @@ from selenium import webdriver
 
 from thread import Thread
 from board import Board
-
-URL_LOGIN = 'https://pedco.uncoma.edu.ar/login/index.php'
-URL_MY = 'https://pedco.uncoma.edu.ar/my/'
+from utils import URL_LOGIN, URL_MY
 
 class Pedco:
     """docstring for Pedco"""
