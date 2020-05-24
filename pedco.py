@@ -36,6 +36,9 @@ class Pedco:
     def my(self):
         self.driver.get(URL_MY)
 
+    def go(self, url):
+        self.driver.get(url)
+
     def go_course(self):
         self.driver.get(URL_COURSE % self.subject.course)
 
