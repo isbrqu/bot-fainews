@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 
+from decouple import config
 from orator import DatabaseManager, Model
 from .subject import Subject
 from .thread import Thread
