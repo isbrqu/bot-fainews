@@ -4,7 +4,6 @@
 from time import ctime, sleep
 from decouple import config
 from colorama import Fore, init
-from orator import DatabaseManager, Model
 
 from pedco import Pedco
 from faibot import Faibot
@@ -16,16 +15,7 @@ from models import BoardUrls
 if __name__ == '__main__':
     
     init(convert=True, autoreset=True)
-    Model.set_connection_resolver(DatabaseManager({
-        'mysql': {
-            'driver':   'mysql',
-            'host':     config('DB_HOST'),
-            'database': config('DB_DATABASE'),
-            'user':     config('DB_USER'),
-            'password': config('DB_PASSWORD'),
-            'prefix':   '',
-        }
-    }))
+
     bot = Faibot()
     pedco = Pedco()
     subjects = Subject.all()
