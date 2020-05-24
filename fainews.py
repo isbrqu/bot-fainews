@@ -47,9 +47,7 @@ if __name__ == '__main__':
 
                     pedco.go_forum()
                     newthread = pedco.first_thread
-                    oldthread = Thread.select('url').where('subject_id', subject.id).order_by('id', 'desc').first()
-
-                    if not oldthread or newthread.url != oldthread.url:
+                    if newthread.url != Thread.last_url(subjects.id):
                         Thread.insert(newthread.data)
                         bot.send_nov(subject.alias, newthread.name, newthread.url)
                         pedco.go(newthread.url)
