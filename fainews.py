@@ -3,18 +3,13 @@
 
 from time import ctime, sleep
 from decouple import config
-from colorama import Fore, init
 
 from pedco import Pedco
 from faibot import Faibot
 
-from models import Subject
-from models import Thread
-from models import BoardUrls
+from models import Subject, Thread, BoardUrls
 
 if __name__ == '__main__':
-    
-    init(convert=True, autoreset=True)
 
     bot = Faibot()
     pedco = Pedco()
@@ -24,8 +19,8 @@ if __name__ == '__main__':
         try:
             print('iniciando sesión...')
             while not pedco.login(username=config('PEDCO_USERNAME'), password=config('PEDCO_PASSWORD')):
-                print(Fore.RED + 'no se pudo iniciar sesión')
-                print('title: ' + pedco.title)
+                print('no se pudo iniciar sesión')
+                print('title:', pedco.title)
                 sleep(120)
                 print('iniciando sesión...')
             print('sesión inicianda')
@@ -43,7 +38,7 @@ if __name__ == '__main__':
                         BoardUrls.insert(newurls)
                         for url in newurls:
                             bot.send_url(subject.alias, url)
-                        print(Fore.GREEN + ctime() + ' - link/s en ' + subject.name)
+                        print(ctime(), '- link/s en', subject.name)
 
                     pedco.go_forum()
                     newthread = pedco.first_thread
@@ -53,15 +48,15 @@ if __name__ == '__main__':
                         pedco.go(newthread.url)
                         img = pedco.screenshot_article()
                         bot.send_photo(img)
-                        print(Fore.GREEN + ctime() + ' - publicación en ' + subject.name)
+                        print(ctime(), '- publicación en', subject.name)
 
-                    print(ctime() + ' - verificó ' + subject.name)
+                    print(ctime(), '- verificó', subject.name)
 
                 bot.check()
                 sleep(config('TIME_SLEEP', cast=int))
-            print(Fore.YELLOW + 'la sesión expiró')
+            print('la sesión expiró')
         except Exception as e:
             if config('DEBUG', default=True, cast=bool):
                 raise e
-            print(Fore.RED + f'{ctime()} - {e}')
+            print(f'{ctime()} - {e}')
             sleep(120)
