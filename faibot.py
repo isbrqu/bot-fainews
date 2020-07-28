@@ -1,17 +1,19 @@
 import re
 import telegram
-from telegram.ParseMode import MARKDOWN_V2
 from decouple import config
 from datetime import datetime
 from utils import escape
 
-class Faibot(object):
+MODE = telegram.ParseMode.MARKDOWN_V2
+
+class Faibot(telegram.Bot):
 	"""docstring for Faibot"""
 	def __init__(self):
-		self.bot = telegram.Bot(token=config('TELEGRAM_BOT_TOKEN'))
+        super().__init__(token=config('TELEGRAM_BOT_TOKEN'))
 		self.my_id = config('TELEGRAM_MY_CHAT')
 		self.group_id = config('TELEGRAM_GROUP_CHAT')
-		if config('DEBUG', default=True, cast=bool):
+        self.debug = config('DEBUG', default=True, cast=bool)
+		if self.debug:
 			self.group_id = self.my_id
 
 	def send_nov(self, alias, title, url):
@@ -21,19 +23,19 @@ class Faibot(object):
 		self.send_group()
 
 	def send_photo(self, path):
-		self.bot.send_photo(chat_id=self.group_id, photo=open(path, 'rb'))
+		self.send_photo(chat_id=self.group_id, photo=open(path, 'rb'))
 
 	def check(self):
 		self.send_me(datetime.now().strftime('`%a %H:%M:%S`'))
 
 	def send_me(self, msg, markdown=True):
 		if markdown:
-			self.bot.send_message(chat_id=self.my_id, text=msg, parse_mode=MARKDOWN_V2)
+			self.send_message(chat_id=self.my_id, text=msg, parse_mode=MODE)
 		else:
-			self.bot.send_message(chat_id=self.my_id, text=msg)
+			self.send_message(chat_id=self.my_id, text=msg)
 
 	def send_group(self, msg):
-		self.bot.send_message(chat_id=self.group_id, text=msg, parse_mode=MARKDOWN_V2)
+		self.send_message(chat_id=self.group_id, text=msg, parse_mode=MODE)
 
 	def send_url(self, alias, url):
 		if 'youtu' in url['url']:
@@ -66,4 +68,4 @@ class Faibot(object):
 			self.send_me(msg)
 
 	def _send(self, chat_id, msg):
-		self.bot.send_message(chat_id=chat_id, text=msg, parse_mode=MARKDOWN_V2)
+		self.send_message(chat_id=chat_id, text=msg, parse_mode=MODE)
