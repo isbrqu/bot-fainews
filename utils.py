@@ -1,3 +1,5 @@
+import re
+
 URL_BASE = 'https://pedco.uncoma.edu.ar/'
 URL_LOGIN = URL_BASE + 'login/index.php'
 URL_MY = URL_BASE + 'my/'

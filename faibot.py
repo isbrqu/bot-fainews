@@ -1,4 +1,3 @@
-import re
 import telegram
 from decouple import config
 from datetime import datetime
