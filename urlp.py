@@ -1,0 +1,5 @@
+BASE = 'https://pedco.uncoma.edu.ar/'
+LOGIN = BASE + 'login/index.php'
+MY = BASE + 'my/'
+COURSE = BASE + 'course/view.php?id=%d'
+FORUM = BASE + 'mod/forum/view.php?id=%d'

@@ -3,9 +3,9 @@ from io import BytesIO
 from datetime import datetime
 from selenium import webdriver
 
+import urlp
 from thread import Thread
 from board import Board
-from utils import URL_LOGIN, URL_MY, URL_COURSE, URL_FORUM
 from message import TITLE_LOGIN
 
 class Pedco(webdriver.PhantomJS):
@@ -16,10 +16,10 @@ class Pedco(webdriver.PhantomJS):
 
     @property
     def in_login(self):
-        return (self.current_url == URL_LOGIN)
+        return (self.current_url == urlp.LOGIN)
 
     def login(self, username=None, password=None):
-        self.get(URL_LOGIN)
+        self.get(urlp.LOGIN)
         if username and password and self.title == TITLE_LOGIN:
             if not self.find_elements_by_id('notice'):
                 self.find_element_by_name('username').send_keys(username)
@@ -30,16 +30,16 @@ class Pedco(webdriver.PhantomJS):
         return not self.in_login
 
     def my(self):
-        self.get(URL_MY)
+        self.get(urlp.MY)
 
     def go(self, url):
         self.get(url)
 
     def go_course(self):
-        self.get(URL_COURSE % self.subject.course)
+        self.get(urlp.COURSE % self.subject.course)
 
     def go_forum(self):
-        self.get(URL_FORUM % self.subject.forum)
+        self.get(urlp.FORUM % self.subject.forum)
 
     @property
     def board(self):
