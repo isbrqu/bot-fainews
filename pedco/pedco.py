@@ -45,11 +45,13 @@ class Pedco(webdriver.PhantomJS):
 
     @property
     def board(self):
-        return Board(self.find_element_by_id('region-main'), self.subject.id)
+        element = self.find_element_by_id('region-main')
+        return Board(element, self.subject.id)
 
     @property
     def first_thread(self):
-        return Thread(self.find_element_by_css_selector('tr.discussion'), self.subject.id)
+        element = self.find_element_by_css_selector('tr.discussion')
+        return Thread(element, self.subject.id)
 
     def screenshot_article(self):
         article = self.find_element_by_tag_name('article')
