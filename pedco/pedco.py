@@ -32,9 +32,6 @@ class Pedco(webdriver.PhantomJS):
     def my(self):
         self.get(urlp.MY)
 
-    def go(self, url):
-        self.get(url)
-
     def go_course(self):
         self.get(urlp.COURSE % self.subject.course)
 
