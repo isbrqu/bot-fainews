@@ -7,11 +7,13 @@ MSG = json.load(open('messages.json', 'r', encoding='utf-8'))
 BASE = MSG['base']
 DATETIME = MSG['datetime']
 NOTICES = MSG['notices']
+TITLE_LOGIN = MSG['title_login']
 
 NOTICE_POST = NOTICES['special']['post']
 NOTICE_UNKNOW = NOTICES['special']['unknow']
 NOTICES_NORMAL = NOTICES['normal']
 NOTICES_NORMAL_LIST = NOTICES_NORMAL.keys()
+
 
 def datetime():
     return dt.now().strftime(DATETIME)

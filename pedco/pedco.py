@@ -6,10 +6,11 @@ from selenium import webdriver
 from thread import Thread
 from board import Board
 from utils import URL_LOGIN, URL_MY, URL_COURSE, URL_FORUM
+from message import TITLE_LOGIN
 
 class Pedco:
     """docstring for Pedco"""
-    def __init__(self):
+    def __init__(self, path):
         self.driver = webdriver.PhantomJS()
         self.driver.set_window_size(1400, 1000)
         self.subject = None
@@ -24,7 +25,7 @@ class Pedco:
 
     def login(self, username=None, password=None):
         self.driver.get(URL_LOGIN)
-        if username and password and self.title == 'PEDCO: Entrar al sitio':
+        if username and password and self.title == TITLE_LOGIN:
             if not self.driver.find_elements_by_id('notice'):
                 self.driver.find_element_by_name('username').send_keys(username)
                 self.driver.find_element_by_name('password').send_keys(password)
