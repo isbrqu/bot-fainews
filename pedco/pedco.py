@@ -4,19 +4,24 @@ from datetime import datetime
 from selenium import webdriver
 
 import urlp
-from thread import Thread
-from board import Board
+from .thread import Thread
+from .board import Board
 from message import TITLE_LOGIN
 
 class Pedco(webdriver.PhantomJS):
     """docstring for Pedco"""
-    def __init__(self, path):
+    def __init__(self):
+        super().__init__()
         self.set_window_size(1400, 1000)
         self.subject = None
 
     @property
     def in_login(self):
         return (self.current_url == urlp.LOGIN)
+
+    @property
+    def logged_in(self):
+        return not self.in_login
 
     def login(self, username=None, password=None):
         self.get(urlp.LOGIN)
