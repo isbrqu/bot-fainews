@@ -13,10 +13,6 @@ class Board:
         self.urls = extract_urls(element)
         self.newurls = []
 
-    def diffurl(self, urls):
-        self.newurls = [url for url in self.urls if url['url'] not in urls]
-        return self.newurls
-
     def extract_urls(self, element):
         for url in re.findall(YT, element.get_attribute('innerHTML')):
             urls.append({'name': 'Youtube video', 'url': url})

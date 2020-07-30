@@ -5,6 +5,7 @@ from orator import DatabaseManager, Model
 from .subject import Subject
 from .discussion import Discussion
 from .url import Url
+from .url_category import UrlCategory
 
 Model.set_connection_resolver(DatabaseManager({
     'mysql': {
