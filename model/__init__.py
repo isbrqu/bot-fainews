@@ -4,7 +4,7 @@ from decouple import config
 from orator import DatabaseManager, Model
 from .subject import Subject
 from .discussion import Discussion
-from .board_urls import BoardUrls
+from .url import Url
 
 Model.set_connection_resolver(DatabaseManager({
     'mysql': {

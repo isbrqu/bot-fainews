@@ -1,8 +1,9 @@
 from orator import Model
+from orator.orm import scope
 
-class BoardUrls(Model):
+class Url(Model):
 
-    __table__ = 'board_urls'
+    __table__ = 'urls'
     __timestamps__ = False
 
     @scope
