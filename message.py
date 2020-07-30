@@ -18,7 +18,7 @@ NOTICES_NORMAL_LIST = NOTICES_NORMAL.keys()
 def datetime():
     return dt.now().strftime(DATETIME)
 
-def identify_notice_by_text(text):
+def identify_notice(text):
     msg = NOTICE_UNKNOW
     for key in NOTICES_NORMAL_LIST:
         if key in text:

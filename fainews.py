@@ -1,63 +1,55 @@
 #!python3
 # -*- coding: utf-8 -*-
-
-from time import ctime, sleep
+import time
 from decouple import config
-
 from pedco import Pedco
 from faibot import Faibot
-
-from models import Subject, Thread, BoardUrls
+from models import Subject, BoardUrls, Discussion
 
 if __name__ == '__main__':
+
+    USERNAME = config('PEDCO_USERNAME')
+    PASSWORD = config('PEDCO_PASSWORD')
+    TIME_SLEEP_SUCCESFUL = config('TIME_SLEEP', cast=int)
+    TIME_SLEEP_FAIL = config('TIME_SLEEP_FAIL', cast=int)
+    DEBUG = config('DEBUG', default=True, cast=bool)
 
     bot = Faibot()
     pedco = Pedco()
     subjects = Subject.all()
-    username = config('PEDCO_USERNAME')
-    password = config('PEDCO_PASSWORD')
 
     while True:
         try:
             print('iniciando sesión...')
-            while not pedco.login(username, password):
+            while not pedco.login(USERNAME, PASSWORD):
                 print('no se pudo iniciar sesión')
                 print('title:', pedco.title)
-                sleep(120)
+                time.sleep(TIME_SLEEP_FAIL)
                 print('iniciando sesión...')
             print('sesión inicianda')
-
-            while pedco.logged_in:
+            while True:
                 for subject in subjects:
-                    pedco.subject = subject
-
-                    pedco.go_course()
-                    urls = BoardUrls.where('subject_id', subject.id).lists('url')
-                    newurls = pedco.board.diffurl(urls)
-
-                    if newurls:
-                        BoardUrls.insert(newurls)
-                        for url in newurls:
-                            bot.send_url(subject.alias, url)
-                        print(ctime(), '- link/s en', subject.name)
-
-                    pedco.go_forum()
-                    newthread = pedco.first_thread
-                    if newthread.url != Thread.last_url(subjects.id):
-                        Thread.insert(newthread.data)
-                        bot.send_news(subject.alias, newthread.name, newthread.url)
-                        pedco.go(newthread.url)
-                        img = pedco.screenshot_article()
-                        bot.send_photo(img)
-                        print(ctime(), '- publicación en', subject.name)
-
-                    print(ctime(), '- verificó', subject.name)
-
+                    pedco.open(subject.url)
+                    urls = pedco.board.urls
+                    BoardUrls.insert_with_subject(urls, subject)
+                    for forum in subject.forums:
+                        pedco.open(forum.url)
+                        dis = pedco.last_discussion
+                        if Discussion.is_new(dis):
+                            pedco.open(dis.url)
+                            dis.img = pedco.screenshot_discussion(subject.name)
+                            Discussion.insert_with_subject(dis, subject)
+                for url in BoardUrls.not_sent():
+                    bot.send_url(url)
+                    url.update_to_shipped()
+                for dis in Discussion.not_sent():
+                    bot.send_discussion(dis)
+                    dis.update_to_shipped()
                 bot.check()
-                sleep(config('TIME_SLEEP', cast=int))
-            print('la sesión expiró')
+                print('sleep...')
+                time.sleep(TIME_SLEEP)
         except Exception as e:
-            if config('DEBUG', default=True, cast=bool):
+            if DEBUG:
                 raise e
-            print(f'{ctime()} - {e}')
-            sleep(120)
+            print(time.ctime(), e)
+            time.sleep(TIME_SLEEP_FAIL)

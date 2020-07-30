@@ -3,7 +3,7 @@
 from decouple import config
 from orator import DatabaseManager, Model
 from .subject import Subject
-from .thread import Thread
+from .discussion import Discussion
 from .board_urls import BoardUrls
 
 Model.set_connection_resolver(DatabaseManager({

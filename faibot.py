@@ -14,7 +14,7 @@ class Faibot(telegram.Bot):
             self.group_id = self.my_id
 
     def send_message(self, chat_id, text):
-        super().send_message(chat_id=chat_id, text=text, parse_mode=self.mode)
+        super().send_message(chat_id, text, parse_mode=self.mode)
 
     def send_me(self, text):
         self.send_message(self.my_id, text)
@@ -25,21 +25,21 @@ class Faibot(telegram.Bot):
     def check(self):
         self.send_me(message.datetime())
 
-    def send_news(self, alias, title, url):
+    def send_discussion(self, discussion):
         self.send_me(message.build(
-            alias=alias,
+            alias=discussion.subject.alias,
             notice=message.NOTICE_POST,
-            title=title,
-            url=url
+            title=discussion.title,
+            url=discussion.url
         ))
 
-    def send_url(self, alias, url):
+    def send_url(self, url):
         self.send_group(message.build(
-            alias=alias,
-            notice=message.identify_notice_by_text(url['url']),
-            title=url['name'],
-            url=url['url']
+            alias=url.subject.alias,
+            notice=message.identify_notice(url.path),
+            title=url.name,
+            url=url.path
         ))
 
     def send_photo(self, path):
-        super().send_photo(chat_id=self.group_id, photo=open(path, 'rb'))
+        super().send_photo(self.group_id, photo=open(path, 'rb'))

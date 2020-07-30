@@ -3,10 +3,11 @@ from io import BytesIO
 from datetime import datetime
 from selenium import webdriver
 
-import urlp
-from .thread import Thread
 from .board import Board
+from .discussion import Discussion
 from message import TITLE_LOGIN
+
+URL_MY =  'https://pedco.uncoma.edu.ar/my'
 
 class Pedco(webdriver.PhantomJS):
     """docstring for Pedco"""
@@ -17,15 +18,23 @@ class Pedco(webdriver.PhantomJS):
 
     @property
     def in_login(self):
-        return (self.current_url == urlp.LOGIN)
+        return (self.current_url == urlp.LOGIN and self.title == TITLE_LOGIN)
 
     @property
     def logged_in(self):
         return not self.in_login
 
-    def login(self, username=None, password=None):
+    @property
+    def board(self):
+        return Board(self.find_element_by_id('region-main'))
+
+    @property
+    def first_thread(self):
+        return Discussion(self.find_element_by_css_selector('tr.discussion'))
+
+    def login(self, username, password):
         self.get(urlp.LOGIN)
-        if username and password and self.title == TITLE_LOGIN:
+        if self.in_login:
             if not self.find_elements_by_id('notice'):
                 self.find_element_by_name('username').send_keys(username)
                 self.find_element_by_name('password').send_keys(password)
@@ -35,25 +44,9 @@ class Pedco(webdriver.PhantomJS):
         return not self.in_login
 
     def my(self):
-        self.get(urlp.MY)
+        self.get(URL_MY)
 
-    def go_course(self):
-        self.get(urlp.COURSE % self.subject.course)
-
-    def go_forum(self):
-        self.get(urlp.FORUM % self.subject.forum)
-
-    @property
-    def board(self):
-        element = self.find_element_by_id('region-main')
-        return Board(element, self.subject.id)
-
-    @property
-    def first_thread(self):
-        element = self.find_element_by_css_selector('tr.discussion')
-        return Thread(element, self.subject.id)
-
-    def screenshot_article(self):
+    def screenshot_article(self, name):
         article = self.find_element_by_tag_name('article')
         location, size = article.location, article.size
         img = Image.open(BytesIO(self.get_screenshot_as_png()))
@@ -62,7 +55,7 @@ class Pedco(webdriver.PhantomJS):
         right = location['x'] + size['width']
         bottom = location['y'] + size['height']
         img = img.crop((left, top, right, bottom))
-        date_time = datetime.now().strftime('%m-%d-%H-%M-%S')
-        path = f'img/{self.subject.name}-{date_time}.png'
+        dt = datetime.now().strftime('%m-%d-%H-%M-%S')
+        path = f'img/{name}-{dt}.png'
         img.save(path)
         return path
