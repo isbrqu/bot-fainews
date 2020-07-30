@@ -2,9 +2,9 @@ from orator import Model
 from orator.orm import scope
 
 class Thread(Model):
-	
-	__table__ = 'threads'
-	__timestamps__ = False
+
+    __table__ = 'threads'
+    __timestamps__ = False
 
     @scope
     def last_url(self, query, subject_id):
