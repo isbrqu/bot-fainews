@@ -10,10 +10,10 @@ YT = r'((?:https?:\/\/)?\
 class Board:
     """docstring for Board"""
     def __init__(self, element):
-        self.urls = extract_urls(element)
-        self.newurls = []
+        self.urls = self._extract_urls(element)
 
-    def extract_urls(self, element):
+    def _extract_urls(self, element):
+        urls = Collection([])
         for url in re.findall(YT, element.get_attribute('innerHTML')):
             urls.append({'name': 'Youtube video', 'url': url})
         for a in element.find_elements_by_tag_name('a'):
@@ -21,4 +21,4 @@ class Board:
                 'name': a.get_attribute('text'),
                 'url': a.get_attribute('href')
             })
-        return Collection(urls).unique('url').all()
+        return urls.unique('url')

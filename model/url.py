@@ -12,14 +12,18 @@ class Url(Model):
         return query.where('subject_id', subject.id)
 
     @scope
-    def insert_with_subject(self, query, urls, subject):
-        categories = UrlCategory.lists('id', 'name')
-        names = categories.keys()
-        for url in urls:
-            url['subject_id'] = subject.id
-            url['url_category_id'] = 1
-            for name in names:
-                if name in url['url']:
-                    url['url_category_id'] = categories[name]
-                    break
-        return query.insert(urls)
+    def insert_with_subject(self, query, urls1, subject):
+        urls2 = Url.where('subject_id', subject.id).lists('url')
+        urls = urls1.filter(lambda item: item['url'] not in urls2).all()
+        if urls:
+            categories = UrlCategory.lists('id', 'name')
+            categories_names = categories.keys()
+            for url in urls:
+                url['subject_id'] = subject.id
+                url['url_category_id'] = 1
+                for name in categories_names:
+                    if name in url['url']:
+                        url['url_category_id'] = categories[name]
+                        break
+            query.insert(urls)
+        return query

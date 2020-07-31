@@ -2,9 +2,13 @@
 # -*- coding: utf-8 -*-
 import time
 from decouple import config
+
 from pedco import Pedco
 from faibot import Faibot
-from models import Subject, BoardUrls, Discussion
+
+from model import Subject
+from model import Discussion
+from model import Url
 
 if __name__ == '__main__':
 
@@ -31,7 +35,7 @@ if __name__ == '__main__':
                 for subject in subjects:
                     pedco.open(subject.url)
                     urls = pedco.board.urls
-                    BoardUrls.insert_with_subject(urls, subject)
+                    Url.insert_with_subject(urls, subject)
                     for forum in subject.forums:
                         pedco.open(forum.url)
                         dis = pedco.last_discussion
@@ -39,7 +43,7 @@ if __name__ == '__main__':
                             pedco.open(dis.url)
                             dis.img = pedco.screenshot_discussion(subject.name)
                             Discussion.insert_with_subject(dis, subject)
-                for url in BoardUrls.not_sent():
+                for url in Url.not_sent():
                     bot.send_url(url)
                     url.update_to_shipped()
                 for dis in Discussion.not_sent():
