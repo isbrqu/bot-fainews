@@ -13,9 +13,7 @@ class Mechanical(StatefulBrowser):
     """docstring for Mechanical"""
     def __init__(self, subjects=[]):
         super().__init__()
-        self.subjects = subjects
-        self.forums = []
-        self.discussions = []
+        self.courses = Course.all()
 
     @property
     def page(self):
