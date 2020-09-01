@@ -1,7 +1,13 @@
-import urlp
 from mechanicalsoup import StatefulBrowser
 from message import TITLE_LOGIN
 from decouple import config
+
+URL_BASE = 'https://pedco.uncoma.edu.ar/'
+URL_LOGIN = URL_BASE + 'login/index.php'
+URL_HOME = URL_BASE + 'my/'
+URL_COURSE = URL_BASE + 'course/view.php?id=%d'
+URL_FORUM = URL_BASE + 'mod/forum/view.php?id=%d'
+TITLE_LOGIN = 'PEDCO: Entrar al sitio'
 
 class Mechanical(StatefulBrowser):
     """docstring for Mechanical"""
@@ -25,7 +31,7 @@ class Mechanical(StatefulBrowser):
 
     @property
     def in_login(self):
-        return (self.url == urlp.LOGIN)
+        return (self.url == URL_LOGIN)
 
     @property
     def logged_in(self):
