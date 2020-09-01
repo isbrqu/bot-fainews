@@ -1,5 +1,6 @@
-BASE = 'https://pedco.uncoma.edu.ar/'
-LOGIN = BASE + 'login/index.php'
-MY = BASE + 'my/'
-COURSE = BASE + 'course/view.php?id=%d'
-FORUM = BASE + 'mod/forum/view.php?id=%d'
+URL_BASE = 'https://pedco.uncoma.edu.ar/'
+URL_LOGIN = URL_BASE + 'login/index.php'
+URL_HOME = URL_BASE + 'my/'
+URL_COURSE = URL_BASE + 'course/view.php?id=%d'
+URL_FORUM = URL_BASE + 'mod/forum/view.php?id=%d'
+
