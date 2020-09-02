@@ -3,7 +3,7 @@ from orator.orm import scope
 
 class Discussion(Model):
 
-    __table__ = 'discussion'
+    __table__ = 'discusion'
     __timestamps__ = False
 
     @scope

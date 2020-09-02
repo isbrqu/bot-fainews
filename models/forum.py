@@ -1,8 +1,8 @@
 from orator import Model
 
 
-class Course(Model):
+class Forum(Model):
 
-    __table__ = 'materia'
+    __table__ = 'foro'
     __timestamps__ = False
 
