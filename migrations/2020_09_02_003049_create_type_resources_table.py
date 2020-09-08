@@ -12,6 +12,7 @@ class CreateTypeResourcesTable(Migration):
             table.string('nombre', 250).unique()
             table.string('descripcion', 250)
             table.string('mensaje', 250)
+            table.string('identificador', 250)
 
     def down(self):
         """
