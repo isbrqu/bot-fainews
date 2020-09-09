@@ -1,6 +1,9 @@
 from mechanicalsoup import StatefulBrowser
-from message import TITLE_LOGIN
-from decouple import config
+import time
+
+from models import Course
+from models import Resource
+from models import TypeResource
 
 URL_BASE = 'https://pedco.uncoma.edu.ar/'
 URL_LOGIN = URL_BASE + 'login/index.php'
@@ -10,40 +13,28 @@ URL_FORUM = URL_BASE + 'mod/forum/view.php?id=%d'
 TITLE_LOGIN = 'PEDCO: Entrar al sitio'
 
 class Mechanical(StatefulBrowser):
-    """docstring for Mechanical"""
+
     def __init__(self, subjects=[]):
         super().__init__()
         self.courses = Course.all()
-        self.mod = Collection([])
-        self.mod_data = []
-        self.mod_bigbluebuttonbn = []
-        self.mod_chat = []
-        self.mod_choice = []
-        self.mod_quiz = []
-        self.mod_journal = []
-        self.mod_feedback = []
-        self.mod_survey = []
-        self.mod_forum = []
-        self.mod_glossary = []
-        self.mod_lti = []
-        self.mod_hotpot = []
-        self.mod_jitsi = []
-        self.mod_lesson = []
-        self.mod_scorm = []
-        self.mod_workshop = []
-        self.mod_assign = []
-        self.mod_wiki = []
-        self.mod_resource = []
-        self.mod_folder = []
-        self.mod_label = []
-        self.mod_book = []
-        self.mod_page = []
-        self.mod_imscp = []
-        self.mod_url = []
-        self.mod_youtube = []
-        self.mod_meet = []
-        self.mod_unknow = []
-        self._extract_mod()
+        self.types_resource = TypeResource.order_by('idTipoRecurso').get()
+        self.i = 0
+        self.len = len(self.courses)
+        self.current = None
+
+    def __iter__(self):
+        return self
+
+    def __next__(self):
+        if self.i < self.len:
+            self.current = self.courses[self.i]
+            self.open(self.current.url)
+            self._update_mods()
+            self.i += 1
+            return None
+        else:
+            self.i = 0
+            raise StopIteration
 
     @property
     def page(self):
@@ -64,6 +55,19 @@ class Mechanical(StatefulBrowser):
     @property
     def logged_in(self):
         return not self.in_login
+
+    @property
+    def news(self):
+        return Resource.select(
+            'recurso.idRecurso',
+            'recurso.nombre as name',
+            'recurso.url',
+            'materia.nombre as course',
+            'tipoRecurso.nombre as typer',
+            'tipoRecurso.mensaje as msg'
+        ).join('materia', 'recurso.idMateria', '=', 'materia.idMateria')\
+        .join('tipoRecurso', 'recurso.idTipoRecurso', '=', 'tipoRecurso.idTipoRecurso')\
+        .where('enviado', False).get()
 
     def open(self, url):
         success = False
@@ -88,7 +92,7 @@ class Mechanical(StatefulBrowser):
         return success
 
     def login(self, username, password):
-        self.open(urlp.LOGIN)
+        self.open(URL_LOGIN)
         if self.page.find('h4'):
             self.select_form(nr=1)
         else:
@@ -101,76 +105,25 @@ class Mechanical(StatefulBrowser):
             self._update_courses()
         return success
 
-    def _update_courses(self):
-        nav = self.page.select_one('#nav-drawer')
-        links = nav.find_all('a', {'data-parent-key': 'mycourses'})
-        self.subjects = []
-        for a in links:
-            self.subjects.append({
-                'name': a.text.replace('\n', '').lower(),
-                'url': a['href']
-            })
+    def _update_mods(self):
+        mods = []
+        for a in self.page.select('#region-main a[href]'):
+            url = a['href']
+            mod = {}
+            mod['nombre'] = a.get_text()
+            mod['url'] = url
+            mod['enviado'] = False
+            mod['idMateria'] = self.current.idMateria
+            mod['idTipoRecurso'] = self._identifiy_type_of_resource(url)
+            if Resource.not_loaded(mod):
+                Resource.insert(mod)
 
-    def _extract_mod(self):
-        for a in element.find_elements_by_tag_name('a'):
-            name = a.get_attribute('text')
-            url = a.get_attribute('href')
-            mod = {'name': name, 'url': url}
-            self.mod.append(mod)
-            if 'data' in url:
-                self.mod_data.append(mod)
-            elif 'bigbluebuttonbn' in url:
-                self.mod_bigbluebuttonbn.append(mod)
-            elif 'chat' in url:
-                self.mod_chat.append(mod)
-            elif 'choice' in url:
-                self.mod_choice.append(mod)
-            elif 'quiz' in url:
-                self.mod_quiz.append(mod)
-            elif 'journal' in url:
-                self.mod_journal.append(mod)
-            elif 'feedback' in url:
-                self.mod_feedback.append(mod)
-            elif 'survey' in url:
-                self.mod_survey.append(mod)
-            elif 'forum' in url:
-                self.mod_forum.append(mod)
-            elif 'glossary' in url:
-                self.mod_glossary.append(mod)
-            elif 'lti' in url:
-                self.mod_lti.append(mod)
-            elif 'hotpot' in url:
-                self.mod_hotpot.append(mod)
-            elif 'jitsi' in url:
-                self.mod_jitsi.append(mod)
-            elif 'lesson' in url:
-                self.mod_lesson.append(mod)
-            elif 'scorm' in url:
-                self.mod_scorm.append(mod)
-            elif 'workshop' in url:
-                self.mod_workshop.append(mod)
-            elif 'assign' in url:
-                self.mod_assign.append(mod)
-            elif 'wiki' in url:
-                self.mod_wiki.append(mod)
-            elif 'resource' in url:
-                self.mod_resource.append(mod)
-            elif 'folder' in url:
-                self.mod_folder.append(mod)
-            elif 'label' in url:
-                self.mod_label.append(mod)
-            elif 'book' in url:
-                self.mod_book.append(mod)
-            elif 'page' in url:
-                self.mod_page.append(mod)
-            elif 'imscp' in url:
-                self.mod_imscp.append(mod)
-            elif 'url' in url:
-                self.mod_url.append(mod)
-            elif 'youtube.com' in url or 'youtu.be' in url:
-                self.mod_youtube.append(mod)
-            elif 'meet.google.com' in url:
-                self.mod_meet.append(mod)
+    def _identifiy_type_of_resource(self, url):
+        for tr in self.types_resource:
+            if tr.identificador:
+                for iden in tr.identificador.split():
+                    if iden in url:
+                        return tr.idTipoRecurso
             else:
-                self.mod_unknow.append(mod
+                return tr.idTipoRecurso
 
