@@ -1,11 +1,12 @@
-# -*- coding: utf-8 -*-
-
 from decouple import config
 from orator import DatabaseManager, Model
-from .subject import Subject
-from .discussion import Discussion
-from .url import Url
-from .url_category import UrlCategory
+
+from .book import Book
+from .chapter import Chapter
+from .course import Course
+from .forum import Forum
+from .resource import Resource
+from .type_resource import TypeResource
 
 Model.set_connection_resolver(DatabaseManager({
     'mysql': {
@@ -17,3 +18,4 @@ Model.set_connection_resolver(DatabaseManager({
         'prefix': '',
     }
 }))
+
