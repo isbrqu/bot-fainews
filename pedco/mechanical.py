@@ -1,4 +1,5 @@
 from mechanicalsoup import StatefulBrowser
+from datetime import datetime
 import time
 
 from models import Course
@@ -16,25 +17,9 @@ class Mechanical(StatefulBrowser):
 
     def __init__(self, subjects=[]):
         super().__init__()
-        self.courses = Course.all()
+        self.courses1 = Course.first_period()
+        self.courses2 = Course.second_period()
         self.types_resource = TypeResource.order_by('idTipoRecurso').get()
-        self.i = 0
-        self.len = len(self.courses)
-        self.current = None
-
-    def __iter__(self):
-        return self
-
-    def __next__(self):
-        if self.i < self.len:
-            self.current = self.courses[self.i]
-            self.open(self.current.url)
-            self._update_mods()
-            self.i += 1
-            return None
-        else:
-            self.i = 0
-            raise StopIteration
 
     @property
     def page(self):
@@ -106,22 +91,28 @@ class Mechanical(StatefulBrowser):
         success = self.logged_in
         return success
 
-    def update_resources(self):
-        for _ in self:
-            print('OK', self.current.nombre)
+    @property
+    def current_courses(self):
+        if datetime.now().month < 6:
+            return self.courses1
+        else:
+            return self.courses2
 
-    def _update_mods(self):
-        mods = []
-        for a in self.page.select('#region-main a[href]'):
-            url = a['href']
-            mod = {}
-            mod['nombre'] = a.get_text()
-            mod['url'] = url
-            mod['enviado'] = False
-            mod['idMateria'] = self.current.idMateria
-            mod['idTipoRecurso'] = self._identifiy_type_of_resource(url)
-            if Resource.not_loaded(mod):
-                Resource.insert(mod)
+    def update_resources(self):
+        for course in self.current_courses:
+            self.open_with_session(course.url)
+            for a in self.page.select('#region-main a[href]'):
+                url = a['href']
+                mod = {
+                    'nombre': a.get_text(),
+                    'url': url,
+                    'enviado': False,
+                    'idMateria': course.idMateria,
+                    'idTipoRecurso': self._identifiy_type_of_resource(url)
+                }
+                if Resource.not_loaded(mod):
+                    Resource.insert(mod)
+            print(f'OK - {course.idMateria} -> {course.nombre}')
 
     def _identifiy_type_of_resource(self, url):
         for tr in self.types_resource:
