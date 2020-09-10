@@ -105,6 +105,10 @@ class Mechanical(StatefulBrowser):
             self._update_courses()
         return success
 
+    def update_resources(self):
+        for _ in self:
+            print('OK', self.current.nombre)
+
     def _update_mods(self):
         mods = []
         for a in self.page.select('#region-main a[href]'):

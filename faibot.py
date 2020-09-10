@@ -1,6 +1,10 @@
+import re
 import telegram
-import message
+from datetime import datetime
 from decouple import config
+
+BASE = "*Materia*: {course}\n\n*Descripción*: {description}\n{name}\n\n_Link: {url}_"
+DATETIME = '`%a %H:%M:%S`'
 
 class Faibot(telegram.Bot):
     """docstring for Faibot"""
@@ -23,23 +27,27 @@ class Faibot(telegram.Bot):
         self.send_message(self.group_id, text)
 
     def check(self):
-        self.send_me(message.datetime())
+        self.send_me(datetime.now().strftime(DATETIME))
 
-    def send_discussion(self, discussion):
-        self.send_me(message.build(
-            alias=discussion.subject.alias,
-            notice=message.NOTICE_POST,
-            title=discussion.title,
-            url=discussion.url
-        ))
-
-    def send_url(self, url):
-        self.send_group(message.build(
-            alias=url.subject.alias,
-            notice=message.identify_notice(url.path),
-            title=url.name,
-            url=url.path
+    def send_resource(self, resource):
+        self.send_group(self._build(
+            course=resource.course,
+            description=resource.msg,
+            name=resource.name,
+            url=resource.url
         ))
 
     def send_photo(self, path):
         super().send_photo(self.group_id, photo=open(path, 'rb'))
+
+    def _build(self, course, description, name, url):
+        return BASE.format(
+            course=self._escape(course),
+            description=self._escape(description),
+            name=self._escape(name),
+            url=self._escape(url)
+        )
+
+    def _escape(self, text):
+        return re.sub(r'([._*`{}\[\]()~>#|!?+=-])', r'\\\1', text)
+
