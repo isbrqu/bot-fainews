@@ -1,3 +1,3 @@
 # from .pedco import Pedco
-from .mechanical import Mechanical
+from .mechanical_pedco import MechanicalPedco
 

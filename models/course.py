@@ -1,7 +1,7 @@
+from decouple import config
 from orator.orm import Model, accessor
 
-URL_BASE = 'https://pedco.uncoma.edu.ar/'
-URL_COURSE = URL_BASE + 'course/view.php?id=%d'
+URL_COURSE = config('URL_BASE') + 'course/view.php?id=%d'
 
 class Course(Model):
 

@@ -1,45 +1,18 @@
-from mechanicalsoup import StatefulBrowser
-from datetime import datetime
 import time
+from datetime import datetime
 
 from models import Course
 from models import Resource
 from models import TypeResource
+from .mechanical_moodle import MechanicalMoodle
 
-URL_BASE = 'https://pedco.uncoma.edu.ar/'
-URL_LOGIN = URL_BASE + 'login/index.php'
-URL_HOME = URL_BASE + 'my/'
-URL_COURSE = URL_BASE + 'course/view.php?id=%d'
-URL_FORUM = URL_BASE + 'mod/forum/view.php?id=%d'
-TITLE_LOGIN = 'PEDCO: Entrar al sitio'
+class MechanicalPedco(MechanicalMoodle):
 
-class Mechanical(StatefulBrowser):
-
-    def __init__(self, subjects=[]):
+    def __init__(self):
         super().__init__()
         self.courses1 = Course.first_period()
         self.courses2 = Course.second_period()
         self.types_resource = TypeResource.order_by('idTipoRecurso').get()
-
-    @property
-    def page(self):
-        return super().get_current_page()
-
-    @property
-    def url(self):
-        return self.get_url()
-
-    @property
-    def title(self):
-        return self.page.title.text
-
-    @property
-    def in_login(self):
-        return (self.url == URL_LOGIN)
-
-    @property
-    def logged_in(self):
-        return not self.in_login
 
     @property
     def new_resources(self):
@@ -56,40 +29,6 @@ class Mechanical(StatefulBrowser):
         .order_by('recurso.idMateria')\
         .order_by('recurso.idTipoRecurso')\
         .get()
-
-    def open(self, url):
-        success = False
-        while not success:
-            try:
-                super().open(url, timeout=5)
-                success = True
-            except Exception as e:
-                print(e)
-                time.sleep(2)
-        return success
-
-    def open_with_session(self, url):
-        success = False
-        while not success:
-            if self.in_login:
-                print('se ha cerrado la sesión')
-                self.loginenv()
-            else:
-                success = True
-                self.open(url)
-        return success
-
-    def login(self, username, password):
-        self.open(URL_LOGIN)
-        if self.page.find('h4'):
-            self.select_form(nr=1)
-        else:
-            self.select_form()
-            self['username'] = username
-            self['password'] = password
-        self.submit_selected()
-        success = self.logged_in
-        return success
 
     @property
     def current_courses(self):

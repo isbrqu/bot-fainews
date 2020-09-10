@@ -3,24 +3,25 @@
 import time
 from decouple import config
 
-from pedco import Mechanical
+from pedco import MechanicalPedco
 from faibot import Faibot
 
 if __name__ == '__main__':
 
-    USERNAME = config('PEDCO_USERNAME')
-    PASSWORD = config('PEDCO_PASSWORD')
+    mechanical = MechanicalPedco()
+    mechanical.username = config('PEDCO_USERNAME')
+    mechanical.password = config('PEDCO_PASSWORD')
+
     TIME_SLEEP_SUCCESFUL = config('TIME_SLEEP', cast=int)
     TIME_SLEEP_FAIL = config('TIME_SLEEP_FAIL', cast=int)
     DEBUG = config('DEBUG', default=True, cast=bool)
 
     bot = Faibot()
-    mechanical = Mechanical()
 
     while True:
         try:
             print('iniciando sesión...')
-            while not mechanical.login(USERNAME, PASSWORD):
+            while not mechanical.login():
                 print('no se pudo iniciar sesión')
                 print('title:', mechanical.title)
                 time.sleep(TIME_SLEEP_FAIL)
