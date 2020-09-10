@@ -1,6 +1,7 @@
 #!python3
 # -*- coding: utf-8 -*-
 import time
+import morfeo
 from decouple import config
 
 from pedco import MechanicalPedco
@@ -8,23 +9,19 @@ from faibot import Faibot
 
 if __name__ == '__main__':
 
+    bot = Faibot()
     mechanical = MechanicalPedco()
     mechanical.username = config('PEDCO_USERNAME')
     mechanical.password = config('PEDCO_PASSWORD')
 
-    TIME_SLEEP_SUCCESFUL = config('TIME_SLEEP', cast=int)
-    TIME_SLEEP_FAIL = config('TIME_SLEEP_FAIL', cast=int)
     DEBUG = config('DEBUG', default=True, cast=bool)
-
-    bot = Faibot()
 
     while True:
         try:
             print('iniciando sesión...')
             while not mechanical.login():
                 print('no se pudo iniciar sesión')
-                print('title:', mechanical.title)
-                time.sleep(TIME_SLEEP_FAIL)
+                morfeo.fail(f'title: {mechanical.title}')
                 print('iniciando sesión...')
             print('sesión inicianda')
             while True:
@@ -35,11 +32,9 @@ if __name__ == '__main__':
                     new.enviado = True
                     new.save()
                 bot.check()
-                print('a mimir...')
-                time.sleep(TIME_SLEEP_SUCCESFUL)
+                morfeo.succesful('a mimir...')
         except Exception as e:
             if DEBUG:
                 raise e
-            print(time.ctime(), e)
-            time.sleep(TIME_SLEEP_FAIL)
+            morfeo.fail(e)
 
