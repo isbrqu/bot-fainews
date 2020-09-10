@@ -21,49 +21,49 @@ class ForumTableSeeder(Seeder):
                 'idMateria': 2
             },
             {
-                'nombre': 'inglés técnico 1',
+                'nombre': 'novedades de inglés técnico 1',
                 'numeroUrl': 22060,
                 'activo': True,
                 'idMateria': 3
             },
             {
-                'nombre': 'teoría de la computación 1',
+                'nombre': 'novedades de teoría de la computación 1',
                 'numeroUrl': 88332,
                 'activo': True,
                 'idMateria': 4
             },
             {
-                'nombre': 'programación orientada a objetos',
+                'nombre': 'novedades de programación orientada a objetos',
                 'numeroUrl': 197066,
                 'activo': True,
                 'idMateria': 5
             },
             {
-                'nombre': 'ingeniería de requerimientos',
+                'nombre': 'avisos ingeniería de requerimientos',
                 'numeroUrl': 99114,
                 'activo': True,
                 'idMateria': 6
             },
             {
-                'nombre': 'métodos computacionales para el cálculo',
+                'nombre': 'avisos métodos computacionales para el cálculo',
                 'numeroUrl': 101358,
                 'activo': True,
                 'idMateria': 7
             },
             {
-                'nombre': 'teoría de la computación 2',
+                'nombre': 'novedades teoría de la computación 2',
                 'numeroUrl': 100599,
                 'activo': True,
                 'idMateria': 8
             },
             {
-                'nombre': 'arquitecturas y organización de computadoras 1',
+                'nombre': 'cosas nuevas rquitecturas y organización de computadoras 1',
                 'numeroUrl': 101850,
                 'activo': True,
                 'idMateria': 9
             },
             {
-                'nombre': 'programación concurrente',
+                'nombre': 'aviso programación concurrente',
                 'numeroUrl': 361446,
                 'activo': True,
                 'idMateria': 10

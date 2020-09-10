@@ -4,6 +4,7 @@ from datetime import datetime
 from models import Course
 from models import Resource
 from models import TypeResource
+from models import Forum
 from .mechanical_moodle import MechanicalMoodle
 
 class MechanicalPedco(MechanicalMoodle):
@@ -37,6 +38,13 @@ class MechanicalPedco(MechanicalMoodle):
         else:
             return self.courses2
 
+    @property
+    def forums(self):
+        if datetime.now().month < 6:
+            return Forum.first_period()
+        else:
+            return Forum.second_period()
+
     def update_resources(self):
         for course in self.current_courses:
             self.open_with_session(course.url)
@@ -52,6 +60,11 @@ class MechanicalPedco(MechanicalMoodle):
                 if Resource.not_loaded(mod):
                     Resource.insert(mod)
             print(f'OK - {course.idMateria} -> {course.nombre}')
+
+    def update_discussions(self):
+        for forum in self.forums:
+            self.open_with_session(forum.url)
+            print(f'abriendo: {forum.nombre}, {forum.url}, {forum.activo}, {forum.materia}')
 
     def _identifiy_type_of_resource(self, url):
         for tr in self.types_resource:
