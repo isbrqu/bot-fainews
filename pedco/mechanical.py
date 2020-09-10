@@ -101,8 +101,6 @@ class Mechanical(StatefulBrowser):
             self['password'] = password
         self.submit_selected()
         success = self.logged_in
-        if success and not self.courses:
-            self._update_courses()
         return success
 
     def update_resources(self):
