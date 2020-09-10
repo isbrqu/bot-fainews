@@ -28,8 +28,7 @@ if __name__ == '__main__':
             print('sesión inicianda')
             while True:
                 mechanical.update_resources()
-                news = mechanical.news
-                for new in news:
+                for new in mechanical.new_resources:
                     bot.send_resource(new)
                     print(f'{new.course} --> {new.typer} --> {new.name}')
                     new.enviado = True

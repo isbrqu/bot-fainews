@@ -57,7 +57,7 @@ class Mechanical(StatefulBrowser):
         return not self.in_login
 
     @property
-    def news(self):
+    def new_resources(self):
         return Resource.select(
             'recurso.idRecurso',
             'recurso.nombre as name',
@@ -67,7 +67,10 @@ class Mechanical(StatefulBrowser):
             'tipoRecurso.mensaje as msg'
         ).join('materia', 'recurso.idMateria', '=', 'materia.idMateria')\
         .join('tipoRecurso', 'recurso.idTipoRecurso', '=', 'tipoRecurso.idTipoRecurso')\
-        .where('enviado', False).get()
+        .where('enviado', False)\
+        .order_by('recurso.idMateria')\
+        .order_by('recurso.idTipoRecurso')\
+        .get()
 
     def open(self, url):
         success = False
