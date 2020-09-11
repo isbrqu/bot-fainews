@@ -7,6 +7,7 @@ from .course import Course
 from .forum import Forum
 from .resource import Resource
 from .type_resource import TypeResource
+from .discussion import Discussion
 
 Model.set_connection_resolver(DatabaseManager({
     'mysql': {

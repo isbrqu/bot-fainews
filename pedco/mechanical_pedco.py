@@ -1,11 +1,12 @@
-import time
 from datetime import datetime
 
 from models import Course
 from models import Resource
 from models import TypeResource
 from models import Forum
+from models import Discussion
 from .mechanical_moodle import MechanicalMoodle
+from .hdiscussion import HDiscussion
 
 class MechanicalPedco(MechanicalMoodle):
 
@@ -65,6 +66,25 @@ class MechanicalPedco(MechanicalMoodle):
         for forum in self.forums:
             self.open_with_session(forum.url)
             print(f'abriendo: {forum.nombre}, {forum.url}, {forum.activo}, {forum.materia}')
+            for tr in self.page.select('tbody tr.discussion'):
+                new = HDiscussion(tr)
+                old = Discussion.where('numeroUrl', new.url_id).first()
+                if not old:
+                    Discussion.insert({
+                        'nombre': new.name,
+                        'numeroUrl': new.url_id,
+                        'enviado': False,
+                        'rutaFoto': 'primera foto',
+                        'autor': new.author,
+                        'creado': new.created,
+                        'actualizado': new.updated,
+                        'idForo': forum.idForo
+                    })
+                elif old.actualizado != new.updated:
+                    old.rutaFoto = 'foto más nuerva'
+                    old.actualizado = new.updated
+                    old.enviado = False
+                    old.save()
 
     def _identifiy_type_of_resource(self, url):
         for tr in self.types_resource:
