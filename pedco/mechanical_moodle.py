@@ -1,3 +1,4 @@
+import time
 from decouple import config
 from mechanicalsoup import StatefulBrowser
 
