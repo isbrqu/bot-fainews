@@ -5,7 +5,7 @@ from models import Resource
 from models import TypeResource
 from models import Forum
 from models import Discussion
-from .mechanical_moodle import MechanicalMoodle
+from .mechanical_pedco import MechanicalPedco
 from .hdiscussion import HDiscussion
 
 class MechanicalPedco(MechanicalMoodle):
