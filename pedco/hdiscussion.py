@@ -1,4 +1,7 @@
 import re
+from decouple import config
+
+URL_FORUM = config('URL_BASE') + 'mod/forum/view.php?id=%d'
 
 def clear_space(tag):
     return re.sub(r'\s{2,}|\n', '', tag.text)
@@ -12,6 +15,7 @@ class HDiscussion:
         self._author = None
         self._created = None
         self._updated = None
+        self._url = None
 
     @property
     def url_id(self):
@@ -42,4 +46,11 @@ class HDiscussion:
         if not self._updated:
             self._updated = clear_space(self.td[-4].select('a')[2])
         return self._updated
+
+    @property
+    def url(self):
+        if not self._url:
+            self._url = URL_FORUM % self._url_id
+        return self._url
+        
 
