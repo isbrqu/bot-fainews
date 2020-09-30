@@ -16,7 +16,7 @@ class Forum(Model):
     @classmethod
     def first_period(cls):
         return cls().new_query_without_scopes()\
-            .select('foro.*', 'materia.nombre as materia')\
+            .select('foro.*', 'materia.alias as materia')\
             .join('materia', 'foro.idMateria', '=', 'materia.idMateria')\
             .where('materia.cuatrimestre', 1)\
             .or_where('materia.esRecursable', True)\
@@ -25,7 +25,7 @@ class Forum(Model):
     @classmethod
     def second_period(cls):
         return cls().new_query_without_scopes()\
-            .select('foro.*', 'materia.nombre as materia')\
+            .select('foro.*', 'materia.alias as materia')\
             .join('materia', 'foro.idMateria', '=', 'materia.idMateria')\
             .where('materia.cuatrimestre', 2)\
             .or_where('materia.esRecursable', True)\
