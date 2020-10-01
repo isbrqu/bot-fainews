@@ -12,6 +12,7 @@ class MechanicalMoodle(StatefulBrowser):
         super().__init__()
         self.username = None
         self.password = None
+        self.open(URL_HOME) 
 
     @property
     def page(self):
@@ -47,8 +48,8 @@ class MechanicalMoodle(StatefulBrowser):
             if not self.username or not self.password:
                 raise Exception('Undefined username or password')
             self.select_form()
-            self['username'] = username
-            self['password'] = password
+            self['username'] = self.username
+            self['password'] = self.password
             self.submit_selected()
         return self.logged_in
 
@@ -56,7 +57,7 @@ class MechanicalMoodle(StatefulBrowser):
         if URL_LOGIN in url:
             url = URL_HOME
         self.open(url)
-        while self.logged_in:
+        while not self.logged_in:
             print('se cerró la sesión')
             self.login()
             self.open(url)
