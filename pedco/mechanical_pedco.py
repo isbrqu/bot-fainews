@@ -67,6 +67,7 @@ class MechanicalPedco(MechanicalMoodle):
                         'nombre': new.name,
                         'numeroUrl': new.url_id,
                         'enviado': False,
+                        'rutaFoto': '',
                         'autor': new.author,
                         'creado': new.created,
                         'actualizado': new.updated,
