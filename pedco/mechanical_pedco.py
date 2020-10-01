@@ -1,5 +1,4 @@
 from datetime import datetime
-
 from models import Course
 from models import Resource
 from models import TypeResource
@@ -12,8 +11,8 @@ class MechanicalPedco(MechanicalMoodle):
 
     def __init__(self):
         super().__init__()
-        self.courses1 = Course.first_period()
-        self.courses2 = Course.second_period()
+        self.courses1 = Course.everyone_in_the_period(1)
+        self.courses2 = Course.everyone_in_the_period(2)
         self.types_resource = TypeResource.order_by('idTipoRecurso').get()
 
     @property
@@ -33,21 +32,15 @@ class MechanicalPedco(MechanicalMoodle):
         .get()
 
     @property
-    def current_courses(self):
-        if datetime.now().month < 6:
-            return self.courses1
-        else:
-            return self.courses2
+    def courses(self):
+        return (self.courses1 if self.period == 1 else self.courses2)
 
     @property
     def forums(self):
-        if datetime.now().month < 6:
-            return Forum.first_period()
-        else:
-            return Forum.second_period()
+        return Forum.everyone_in_the_period(self.period)
 
     def update_resources(self):
-        for course in self.current_courses:
+        for course in self.courses:
             self.open_with_session(course.url)
             for a in self.page.select('#region-main a[href]'):
                 url = a['href']

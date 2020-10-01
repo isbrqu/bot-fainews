@@ -14,21 +14,11 @@ class Forum(Model):
         return URL_FORUM % self.get_raw_attribute('numeroUrl')
 
     @classmethod
-    def first_period(cls):
+    def everyone_in_the_period(cls, period):
         return cls().new_query_without_scopes()\
             .select('foro.*', 'materia.alias as materia')\
             .join('materia', 'foro.idMateria', '=', 'materia.idMateria')\
-            .where('materia.cuatrimestre', 1)\
+            .where('materia.cuatrimestre', period)\
             .or_where('materia.esRecursable', True)\
             .get()
-
-    @classmethod
-    def second_period(cls):
-        return cls().new_query_without_scopes()\
-            .select('foro.*', 'materia.alias as materia')\
-            .join('materia', 'foro.idMateria', '=', 'materia.idMateria')\
-            .where('materia.cuatrimestre', 2)\
-            .or_where('materia.esRecursable', True)\
-            .get()
-
 

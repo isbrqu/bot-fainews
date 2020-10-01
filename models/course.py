@@ -14,16 +14,9 @@ class Course(Model):
         return URL_COURSE % self.get_raw_attribute('numeroUrl')
 
     @classmethod
-    def first_period(cls):
+    def everyone_in_the_period(cls, period):
         return cls().new_query_without_scopes()\
-            .where('cuatrimestre', 1)\
-            .or_where('esRecursable', True)\
-            .get()
-
-    @classmethod
-    def second_period(cls):
-        return cls().new_query_without_scopes()\
-            .where('cuatrimestre', 2)\
+            .where('cuatrimestre', period)\
             .or_where('esRecursable', True)\
             .get()
 
