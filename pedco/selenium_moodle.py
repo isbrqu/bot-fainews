@@ -3,7 +3,7 @@ from decouple import config
 from selenium import webdriver
 
 URL_LOGIN = config('URL_BASE') + 'login/index.php'
-URL_HOME = config('URL_BASE') + '/my'
+URL_HOME = config('URL_BASE') + 'my'
 TITLE_LOGIN = 'PEDCO: Entrar al sitio'
 
 class SeleniumMoodle(webdriver.PhantomJS):
@@ -13,6 +13,8 @@ class SeleniumMoodle(webdriver.PhantomJS):
         self.set_window_size(1400, 1000)
         self.username = None
         self.password = None
+        self.get(URL_HOME)
+        print('title', super().current_url)
 
     @property
     def in_login(self):
@@ -44,7 +46,7 @@ class SeleniumMoodle(webdriver.PhantomJS):
         if URL_LOGIN in url:
             url = URL_HOME
         self.get(url)
-        while self.logged_in:
+        while not self.logged_in:
             print('se cerró la sesión')
             self.login()
             self.get(url)
