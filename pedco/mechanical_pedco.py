@@ -13,7 +13,7 @@ class MechanicalPedco(MechanicalMoodle):
         super().__init__()
         self.courses1 = Course.everyone_in_the_period(1)
         self.courses2 = Course.everyone_in_the_period(2)
-        self.types_resource = TypeResource.order_by('idTipoRecurso').get()
+        self.types_resource = TypeResource.sort().get()
 
     @property
     def new_resources(self):
@@ -24,11 +24,10 @@ class MechanicalPedco(MechanicalMoodle):
             'materia.nombre as course',
             'tipoRecurso.nombre as typer',
             'tipoRecurso.mensaje as msg'
-        ).join('materia', 'recurso.idMateria', '=', 'materia.idMateria')\
-        .join('tipoRecurso', 'recurso.idTipoRecurso', '=', 'tipoRecurso.idTipoRecurso')\
-        .where('enviado', False)\
-        .order_by('recurso.idMateria')\
-        .order_by('recurso.idTipoRecurso')\
+        ).joinCourse()\
+        .joinTypeResource()\
+        .not_sent()\
+        .sort()\
         .get()
 
     @property
@@ -38,11 +37,10 @@ class MechanicalPedco(MechanicalMoodle):
             'discusion.nombre as name',
             'discusion.autor',
             'materia.nombre as course',
-        ).join('foro', 'discusion.idForo', '=', 'foro.idForo')\
-        .join('materia', 'foro.idMateria', '=', 'materia.idMateria')\
-        .where('enviado', False)\
-        .order_by('foro.idMateria')\
-        .order_by('discusion.idDiscusion')\
+        ).joinForum()\
+        .joinCourse()\
+        .not_sent()\
+        .sort()\
         .get()
 
     @property

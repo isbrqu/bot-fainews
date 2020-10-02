@@ -17,3 +17,21 @@ class Discussion(Model):
     def with_url_id(self, query, url_id):
         return query.where('numeroUrl', url_id)
 
+    @scope
+    def joinForum(self, query):
+        return query.join('foro', 'discusion.idForo', '=', 'foro.idForo')
+
+    @scope
+    def joinCourse(self, query):
+        return query.join('materia', 'foro.idMateria', '=', 'materia.idMateria')
+
+    @scope
+    def not_sent(self, query):
+        return query.where('enviado', False)
+
+    @scope
+    def sort(self, query):
+        return query\
+            .order_by('foro.idMateria')\
+            .order_by('discusion.idDiscusion')\
+
