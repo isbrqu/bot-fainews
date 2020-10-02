@@ -61,7 +61,7 @@ class MechanicalPedco(MechanicalMoodle):
             print(f'abriendo: {forum.nombre}, {forum.url}, {forum.activo}, {forum.materia}')
             for tr in self.page.select('tr.discussion'):
                 new = HDiscussion(tr)
-                old = Discussion.where('numeroUrl', new.url_id).first()
+                old = Discussion.with_url_id(new.url_id).first()
                 if not old:
                     Discussion.insert({
                         'nombre': new.name,
