@@ -32,6 +32,20 @@ class MechanicalPedco(MechanicalMoodle):
         .get()
 
     @property
+    def new_discussions(self):
+        return Discussion.select(
+            'discusion.idDiscusion',
+            'discusion.nombre as name',
+            'discusion.autor',
+            'materia.nombre as course',
+        ).join('foro', 'discusion.idForo', '=', 'foro.idForo')\
+        .join('materia', 'foro.idMateria', '=', 'materia.idMateria')\
+        .where('enviado', False)\
+        .order_by('foro.idMateria')\
+        .order_by('discusion.idDiscusion')\
+        .get()
+
+    @property
     def courses(self):
         return (self.courses1 if self.period == 1 else self.courses2)
 
