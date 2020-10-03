@@ -36,7 +36,7 @@ class Faibot(telegram.Bot):
         self.send_me(datetime.now().strftime(DATETIME))
 
     def send_resource(self, resource):
-        self.send_group(self._build(
+        self.send_group(self.__build(
             course=resource.course,
             description=resource.msg,
             name=resource.name,
@@ -46,14 +46,14 @@ class Faibot(telegram.Bot):
     def send_photo(self, path):
         super().send_photo(self.group_id, photo=open(path, 'rb'))
 
-    def _build(self, course, description, name, url):
+    def __build(self, course, description, name, url):
         return BASE.format(
-            course=self._escape(course),
-            description=self._escape(description),
-            name=self._escape(name),
-            url=self._escape(url)
+            course=self.__escape(course),
+            description=self.__escape(description),
+            name=self.__escape(name),
+            url=self.__escape(url)
         )
 
-    def _escape(self, text):
+    def __escape(self, text):
         return re.sub(r'([._*`{}\[\]()~>#|!?+=-])', r'\\\1', text)
 
