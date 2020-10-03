@@ -1,5 +1,6 @@
 import re
 import telegram
+from telegram.utils.helpers import escape_markdown
 from datetime import datetime
 from decouple import config
 from functools import wraps
@@ -56,5 +57,5 @@ class Faibot(telegram.Bot):
         super().send_photo(self.group_id, photo=open(path, 'rb'))
 
     def __escape(self, text):
-        return re.sub(r'([._*`{}\[\]()~>#|!?+=-])', r'\\\1', text)
+        return escape_markdown(text, version=2)
 
