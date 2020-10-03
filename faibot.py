@@ -3,7 +3,13 @@ import telegram
 from datetime import datetime
 from decouple import config
 
-BASE = "*Materia*: {course}\n\n*Descripción*: {description}\n{name}\n\n_Link: {url}_"
+BASE = """
+*Materia*: {course}\n
+*Descripción*: {description}
+{name}\n
+_Link: {url}_
+"""
+
 DATETIME = '`%a %H:%M:%S`'
 
 class Faibot(telegram.Bot):
