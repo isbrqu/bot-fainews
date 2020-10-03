@@ -2,6 +2,7 @@ import re
 import telegram
 from datetime import datetime
 from decouple import config
+from functools import wraps
 
 BASE = """
 *Materia*: {course}\n
@@ -9,50 +10,50 @@ BASE = """
 {name}\n
 _Link: {url}_
 """
-
 DATETIME = '`%a %H:%M:%S`'
+
+TOKEN = config('TELEGRAM_BOT_TOKEN')
+PARSE_MODE = telegram.ParseMode.MARKDOWN_V2
+MY_ID = config('TELEGRAM_MY_CHAT')
+GROUP_ID = config('TELEGRAM_GROUP_CHAT')
+if config('DEBUG', cast=bool):
+    GROUP_ID = MY_ID
 
 class Faibot(telegram.Bot):
     """docstring for Faibot"""
     def __init__(self):
-        super().__init__(token=config('TELEGRAM_BOT_TOKEN'))
-        self.mode = telegram.ParseMode.MARKDOWN_V2
-        self.my_id = config('TELEGRAM_MY_CHAT')
-        self.group_id = config('TELEGRAM_GROUP_CHAT')
-        self.debug = config('DEBUG', default=True, cast=bool)
-        if self.debug:
-            self.group_id = self.my_id
+        super().__init__(token=TOKEN)
 
-    def send_message(self, chat_id, text):
-        super().send_message(chat_id, text, parse_mode=self.mode)
+    def __send_message(self, chat_id, text):
+        super().send_message(chat_id, text, parse_mode=PARSE_MODE)
 
-    def send_me(self, text):
-        self.send_message(self.my_id, text)
+    def send_me(function):
+        @wraps(function)
+        def wrapper(self, *args):
+            self.__send_message(MY_ID, function(self, *args))
+        return wrapper
 
-    def send_group(self, text):
-        self.send_message(self.group_id, text)
+    def send_group(function):
+        @wraps(function)
+        def wrapper(self, *args):
+            self.__send_message(GROUP_ID function(self, *args))
+        return wrapper
 
+    @send_me
     def check(self):
-        self.send_me(datetime.now().strftime(DATETIME))
+        return datetime.now().strftime(DATETIME)
 
+    @send_group
     def send_resource(self, resource):
-        self.send_group(self.__build(
-            course=resource.course,
-            description=resource.msg,
-            name=resource.name,
-            url=resource.url
-        ))
+        return BASE.format(
+            course=self.__escape(resource.course),
+            description=self.__escape(resource.msg),
+            name=self.__escape(resource.name),
+            url=self.__escape(resource.url)
+        )
 
     def send_photo(self, path):
         super().send_photo(self.group_id, photo=open(path, 'rb'))
-
-    def __build(self, course, description, name, url):
-        return BASE.format(
-            course=self.__escape(course),
-            description=self.__escape(description),
-            name=self.__escape(name),
-            url=self.__escape(url)
-        )
 
     def __escape(self, text):
         return re.sub(r'([._*`{}\[\]()~>#|!?+=-])', r'\\\1', text)
