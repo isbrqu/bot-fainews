@@ -37,7 +37,7 @@ class Faibot(telegram.Bot):
     def send_group(function):
         @wraps(function)
         def wrapper(self, *args):
-            self.__send_message(GROUP_ID function(self, *args))
+            self.__send_message(GROUP_ID, function(self, *args))
         return wrapper
 
     @send_me
@@ -54,7 +54,7 @@ class Faibot(telegram.Bot):
         )
 
     def send_photo(self, path):
-        super().send_photo(self.group_id, photo=open(path, 'rb'))
+        super().send_photo(GROUP_ID, photo=open(path, 'rb'))
 
     def __escape(self, text):
         return escape_markdown(text, version=2)
