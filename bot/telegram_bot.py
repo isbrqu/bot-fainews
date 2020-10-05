@@ -1,17 +1,8 @@
-import re
 import telegram
+import .message
 from telegram.utils.helpers import escape_markdown
-from datetime import datetime
 from decouple import config
 from functools import wraps
-
-BASE = """
-*Materia*: {course}\n
-*Descripción*: {description}
-{name}\n
-_Link: {url}_
-"""
-DATETIME = '`%a %H:%M:%S`'
 
 TOKEN = config('TELEGRAM_BOT_TOKEN')
 PARSE_MODE = telegram.ParseMode.MARKDOWN_V2
@@ -20,7 +11,7 @@ GROUP_ID = config('TELEGRAM_GROUP_CHAT')
 if config('DEBUG', cast=bool):
     GROUP_ID = MY_ID
 
-class Faibot(telegram.Bot):
+class TelegramBot(telegram.Bot):
     """docstring for Faibot"""
     def __init__(self):
         super().__init__(token=TOKEN)
@@ -42,11 +33,11 @@ class Faibot(telegram.Bot):
 
     @send_me
     def check(self):
-        return datetime.now().strftime(DATETIME)
+        return message.time()
 
     @send_group
     def send_resource(self, resource):
-        return BASE.format(
+        return message.resource.format(
             course=self.__escape(resource.course),
             description=self.__escape(resource.msg),
             name=self.__escape(resource.name),

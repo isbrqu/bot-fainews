@@ -1,6 +1,5 @@
 import time
 
-from datetime import datetime
 from decouple import config
 from mechanicalsoup import StatefulBrowser
 
@@ -64,8 +63,4 @@ class MechanicalMoodle(StatefulBrowser):
             self.login()
             self.open(url)
         return self.logged_in
-
-    @property
-    def period(self):
-        return (1 if datetime.now().month < 6 else 2)
 
