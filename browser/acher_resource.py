@@ -2,7 +2,7 @@ from models import TypeResource
 
 types_resource = TypeResource.sort().get()
 
-class HResource:
+class Resource:
     
     def __init__(self, a):
         self.tag = a

@@ -5,7 +5,7 @@ import morfeo
 import bot
 from decouple import config
 
-from pedco import MechanicalPedco
+from pedco import Browser
 
 if __name__ == '__main__':
 

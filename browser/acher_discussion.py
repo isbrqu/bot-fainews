@@ -6,7 +6,7 @@ URL_FORUM = config('URL_BASE') + 'mod/forum/view.php?id=%d'
 def clear_space(tag):
     return re.sub(r'\s{2,}|\n', '', tag.text)
 
-class HDiscussion:
+class Discussion:
     
     def __init__(self, tr):
         self.td = tr.select('td')
