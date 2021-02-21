@@ -1,5 +1,5 @@
-from decouple import config
 from orator import DatabaseManager, Model
+from orator_config import DATABASES
 
 from .book import Book
 from .chapter import Chapter
@@ -8,14 +8,5 @@ from .forum import Forum
 from .resource import Resource
 from .type_resource import TypeResource
 
-Model.set_connection_resolver(DatabaseManager({
-    'mysql': {
-        'driver': 'mysql',
-        'host': config('DB_HOST'),
-        'database': config('DB_DATABASE'),
-        'user': config('DB_USER'),
-        'password': config('DB_PASSWORD'),
-        'prefix': '',
-    }
-}))
+Model.set_connection_resolver(DatabaseManager(DATABASE))
 

@@ -2,12 +2,12 @@ from decouple import config
 
 DATABASES = {
     'mysql': {
-        'driver': 'mysql',
-        'host': config('DB_HOST'),
         'database': config('DB_DATABASE'),
-        'user': config('DB_USER'),
+        'driver': config('DB_DRIVE'),
+        'host': config('DB_HOST'),
         'password': config('DB_PASSWORD'),
-        'prefix': ''
+        'prefix': '',
+        'user': config('DB_USER'),
     }
 }
 
