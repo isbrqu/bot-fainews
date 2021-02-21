@@ -6,4 +6,4 @@ python-telegram-bot
 # config
 python-decouple
 # scraper
-selenium
+MechanicalSoup
