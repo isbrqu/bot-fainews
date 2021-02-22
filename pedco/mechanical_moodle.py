@@ -1,8 +1,6 @@
-from decouple import config
+# from decouple import config
+import config
 from mechanicalsoup import StatefulBrowser
-
-URL_LOGIN = config('URL_BASE') + 'login/index.php'
-TITLE_LOGIN = 'PEDCO: Entrar al sitio'
 
 class MechanicalMoodle(StatefulBrowser):
 
@@ -13,7 +11,8 @@ class MechanicalMoodle(StatefulBrowser):
 
     @property
     def in_login(self):
-        return (self.url == URL_LOGIN and self.title == TITLE_LOGIN)
+        return (self.url == config.page.url_login
+            and self.page.title.text == config.page.title_login)
 
     @property
     def logged_in(self):
@@ -47,7 +46,7 @@ class MechanicalMoodle(StatefulBrowser):
             password = self.password
         else:
             raise Exception('Undefined username or password')
-        self.open(URL_LOGIN)
+        self.open(config.page.url_login)
         if self.page.find('h4'):
             self.select_form(nr=1)
         else:

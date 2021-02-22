@@ -3,7 +3,5 @@ orator
 mysqlclient
 # bot
 python-telegram-bot
-# config
-python-decouple
 # scraper
 MechanicalSoup

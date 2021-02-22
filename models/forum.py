@@ -1,7 +1,5 @@
-from decouple import config
 from orator import Model
-
-URL_FORUM = config('URL_BASE') + 'mod/forum/view.php?id=%d'
+import config
 
 class Forum(Model):
 

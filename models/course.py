@@ -1,7 +1,5 @@
-from decouple import config
+import config
 from orator.orm import Model, accessor
-
-URL_COURSE = config('URL_BASE') + 'course/view.php?id=%d'
 
 class Course(Model):
 
@@ -11,7 +9,7 @@ class Course(Model):
 
     @accessor
     def url(self):
-        return URL_COURSE % self.get_raw_attribute('numeroUrl')
+        return config.telegram.url_course % self.get_raw_attribute('numeroUrl')
 
     @classmethod
     def first_period(cls):

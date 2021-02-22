@@ -1,20 +1,18 @@
+from datetime import datetime
+import config
 import re
 import telegram
-from datetime import datetime
-from decouple import config
 
 BASE = "*Materia*: {course}\n\n*Descripción*: {description}\n{name}\n\n_Link: {url}_"
-DATETIME = '`%a %H:%M:%S`'
 
 class Faibot(telegram.Bot):
     """docstring for Faibot"""
     def __init__(self):
-        super().__init__(token=config('TELEGRAM_BOT_TOKEN'))
-        self.mode = telegram.ParseMode.MARKDOWN_V2
-        self.my_id = config('TELEGRAM_MY_CHAT')
-        self.group_id = config('TELEGRAM_GROUP_CHAT')
-        self.debug = config('DEBUG', default=True, cast=bool)
-        if self.debug:
+        super().__init__(token=config.telegram.bot_token)
+        self.mode = config.telegram.parse_mode
+        self.my_id = config.telegram.my_chat_id
+        self.group_id = config.telegram.group_chat_id
+        if config.debug:
             self.group_id = self.my_id
 
     def send_message(self, chat_id, text):
@@ -27,7 +25,7 @@ class Faibot(telegram.Bot):
         self.send_message(self.group_id, text)
 
     def check(self):
-        self.send_me(datetime.now().strftime(DATETIME))
+        self.send_me(datetime.now().strftime(f'`{config.datetime.format}`'))
 
     def send_resource(self, resource):
         self.send_group(self._build(

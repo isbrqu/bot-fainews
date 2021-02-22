@@ -1,5 +1,5 @@
 from orator import DatabaseManager, Model
-from orator_config import DATABASES
+from config import DATABASES
 
 from .book import Book
 from .chapter import Chapter
