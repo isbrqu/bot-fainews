@@ -23,7 +23,7 @@ TELEGRAM = {
 }
 
 DEBUG = {
-    'active': env('DEBUG'),
+    'active': True,
     'time_succesful': 10,
     'time_fail': 10,
 }

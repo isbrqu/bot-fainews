@@ -1,8 +1,7 @@
 #!python3
 # -*- coding: utf-8 -*-
-import time
+import config
 import morfeo
-from decouple import config
 
 from pedco import MechanicalPedco
 from faibot import Faibot
@@ -11,10 +10,8 @@ if __name__ == '__main__':
 
     bot = Faibot()
     mechanical = MechanicalPedco()
-    mechanical.username = config('PEDCO_USERNAME')
-    mechanical.password = config('PEDCO_PASSWORD')
-
-    DEBUG = config('DEBUG', default=True, cast=bool)
+    mechanical.username = config.page.cred_username
+    mechanical.password = config.page.cred_password
 
     while True:
         try:
