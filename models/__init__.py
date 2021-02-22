@@ -8,5 +8,5 @@ from .forum import Forum
 from .resource import Resource
 from .type_resource import TypeResource
 
-Model.set_connection_resolver(DatabaseManager(DATABASE))
+Model.set_connection_resolver(DatabaseManager(DATABASES))
 

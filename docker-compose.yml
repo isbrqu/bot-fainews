@@ -13,7 +13,7 @@ services:
             - 3306:3306
     fainews:
         image: fainews
-        command: bash -c "sleep 5 && orator migrate -f --config orator_config.py"
+        command: ./startup.sh
         working_dir: /usr/src/app
         volumes:
             - .:/usr/src/app
