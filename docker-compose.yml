@@ -17,6 +17,7 @@ services:
         working_dir: /usr/src/app
         volumes:
             - .:/usr/src/app
+        env_file: .env
         links:
             - mariadb
         depends_on:
