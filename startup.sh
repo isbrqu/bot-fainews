@@ -1,6 +1,9 @@
 #!/usr/bin/env bash
+declare -i i=1
 while
     sleep 2
-    orator migrate --config orator_config.py --force 2> /dev/null
+    echo "intento: $i"
+    (( i++ ))
+    orator migrate --config config.py --force 2>> errout
 (( $? != 0 ));do :;done
 python fainews.py
