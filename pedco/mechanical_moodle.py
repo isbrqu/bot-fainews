@@ -12,18 +12,6 @@ class MechanicalMoodle(StatefulBrowser):
         self.password = None
 
     @property
-    def page(self):
-        return super().get_current_page()
-
-    @property
-    def url(self):
-        return self.get_url()
-
-    @property
-    def title(self):
-        return self.page.title.text
-
-    @property
     def in_login(self):
         return (self.url == URL_LOGIN and self.title == TITLE_LOGIN)
 
