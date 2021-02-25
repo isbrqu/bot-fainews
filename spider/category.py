@@ -31,9 +31,9 @@ class Category(Spider):
             url = subcategory.css('a::attr(href)').get()
             pagination.append(f'{url}&perpage=200')
             yield {
-                'id': self._param(url, 'categoryid') or '0',
+                'id': self._param(url, 'categoryid'),
                 'name': subcategory.css('a::text').get().strip(),
-                'category_id': category_id,
+                'category_id': category_id or '0',
             }
         yield from response.follow_all(urls=pagination, callback=self.parse)
 

@@ -31,7 +31,7 @@ class Course(Spider):
             yield {
                 'id': self._param(url, 'id') or '0',
                 'name': course.css('a::text').get().strip(),
-                'category_id': category_id,
+                'category_id': category_id or '0',
             } 
         subcategories = response.css('h3.categoryname')
         pagination = subcategories.css('a::attr(href)').getall()
