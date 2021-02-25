@@ -3,8 +3,14 @@ from pprint import pprint
 from scrapy import Spider
 from urllib.parse import parse_qs
 import urllib.parse as urlparse
+from scrapy.linkextractors import LinkExtractor
 
 now = datetime.now().strftime('%Y-%m-%d-%H-%M-%S')
+
+def _param(url, param):
+    parsed = urlparse.urlparse(url)
+    value = parse_qs(parsed.query).get(param)
+    return value[0] if value else None
 
 class Course(Spider):
     name = 'course'
@@ -12,7 +18,7 @@ class Course(Spider):
     allowed_domains = ['pedco.uncoma.edu.ar']
     custom_settings = {
         'FEEDS': {
-            f'csv/{name}-{now}.csv': {
+            f'csv/x{name}-{now}.csv': {
                 'format': 'csv',
                 'encoding': 'utf8',
                 'store_empty': False,
@@ -22,24 +28,23 @@ class Course(Spider):
         'LOG_FILE': f'log/{name}.log',
         # 'CLOSESPIDER_PAGECOUNT': 10,
     }
+    link_extractor_course = LinkExtractor(
+        restrict_css='.coursename'
+    )
+    link_extractor_category = LinkExtractor(
+        restrict_css='h3.categoryname',
+        process_value=lambda url: f'{url}&&perpage=200'
+    )
 
     def parse(self, response):
-        courses = response.css('.coursename')
-        category_id = self._param(response.url, 'categoryid')
+        courses = self.link_extractor_course.extract_links(response)
+        category_id = _param(response.url, 'categoryid') or 0
         for course in courses:
-            url = course.css('a::attr(href)').get()
             yield {
-                'id': self._param(url, 'id') or '0',
-                'name': course.css('a::text').get().strip(),
-                'category_id': category_id or '0',
+                'id': _param(course.url, 'id'),
+                'name': course.text.strip(),
+                'category_id': category_id,
             } 
-        subcategories = response.css('h3.categoryname')
-        pagination = subcategories.css('a::attr(href)').getall()
-        pagination = [f'{url}&perpage=200' for url in pagination]
-        yield from response.follow_all(urls=pagination, callback=self.parse)
-
-    def _param(self, url, param):
-        parsed = urlparse.urlparse(url)
-        _id = parse_qs(parsed.query).get(param, [''])[0]
-        return _id
+        categories = self.link_extractor_category.extract_links(response)
+        yield from response.follow_all(urls=categories, callback=self.parse)
 

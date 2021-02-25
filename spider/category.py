@@ -3,8 +3,14 @@ from pprint import pprint
 from scrapy import Spider
 from urllib.parse import parse_qs
 import urllib.parse as urlparse
+from scrapy.linkextractors import LinkExtractor
 
 now = datetime.now().strftime('%Y-%m-%d-%H-%M-%S')
+
+def _param(url, param):
+    parsed = urlparse.urlparse(url)
+    value = parse_qs(parsed.query).get(param)
+    return value[0] if value else None
 
 class Category(Spider):
     name = 'category'
@@ -12,7 +18,7 @@ class Category(Spider):
     allowed_domains = ['pedco.uncoma.edu.ar']
     custom_settings = {
         'FEEDS': {
-            f'csv/{name}-{now}.csv': {
+            f'csv/x{name}-{now}.csv': {
                 'format': 'csv',
                 'encoding': 'utf8',
                 'store_empty': False,
@@ -22,24 +28,19 @@ class Category(Spider):
         'LOG_FILE': f'log/{name}.log',
         # 'CLOSESPIDER_PAGECOUNT': 10,
     }
+    link_extractor_category = LinkExtractor(
+        restrict_css='h3.categoryname',
+        process_value=lambda url: f'{url}&&perpage=200'
+    )
 
     def parse(self, response):
-        subcategories = response.css('h3.categoryname')
-        category_id = self._param(response.url, 'categoryid')
-        pagination = []
+        subcategories = self.link_extractor_category.extract_links(response)
+        category_id = _param(response.url, 'categoryid') or 0
         for subcategory in subcategories:
-            url = subcategory.css('a::attr(href)').get()
-            pagination.append(f'{url}&perpage=200')
             yield {
-                'id': self._param(url, 'categoryid'),
-                'name': subcategory.css('a::text').get().strip(),
-                'category_id': category_id or '0',
+                'id': _param(subcategory.url, 'categoryid'),
+                'name': subcategory.text.strip(),
+                'category_id': category_id,
             }
-        yield from response.follow_all(urls=pagination, callback=self.parse)
-
-    def _param(self, url, param):
-        parsed = urlparse.urlparse(url)
-        _id = parse_qs(parsed.query).get(param, [''])[0]
-        return _id
-
+        yield from response.follow_all(urls=subcategories, callback=self.parse)
 
