@@ -1,13 +1,13 @@
 from orator.migrations import Migration
 
 
-class CreatePagesTable(Migration):
+class CreateChaptersTable(Migration):
 
     def up(self):
         """
         Run the migrations.
         """
-        with self.schema.create('pages') as table:
+        with self.schema.create('chapters') as table:
             table.increments('id')
             table.string('name')
             table.timestamp('created_at')
