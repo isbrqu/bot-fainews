@@ -3,9 +3,9 @@ from orator.orm import Model, accessor
 
 class Course(Model):
 
-    __table__ = 'materia'
+    __table__ = 'courses'
     __timestamps__ = False
-    __primary_key__ = 'idMateria'
+    __primary_key__ = 'id'
 
     @accessor
     def url(self):

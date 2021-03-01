@@ -1,9 +1,8 @@
 from orator import Model
 
 
-class Chapter(Model):
+class User(Model):
 
-    __table__ = 'chapters'
+    __table__ = 'users'
     __timestamps__ = False
     __primary_key__ = 'id'
-

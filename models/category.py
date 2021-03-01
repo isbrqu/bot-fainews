@@ -1,9 +1,8 @@
 from orator import Model
 
 
-class Chapter(Model):
+class Category(Model):
 
-    __table__ = 'chapters'
+    __table__ = 'categories'
     __timestamps__ = False
     __primary_key__ = 'id'
-

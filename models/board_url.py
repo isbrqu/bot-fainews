@@ -1,9 +1,8 @@
 from orator import Model
 
 
-class Chapter(Model):
+class BoardUrl(Model):
 
-    __table__ = 'chapters'
+    __table__ = 'board_urls'
     __timestamps__ = False
     __primary_key__ = 'id'
-
