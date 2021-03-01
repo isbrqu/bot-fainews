@@ -8,7 +8,7 @@ class CreateCategoriesTable(Migration):
         Run the migrations.
         """
         with self.schema.create('categories') as table:
-            table.increments('id')
+            table.primary('id')
             table.string('name')
             table.integer('category_id').unsigned()
             table.foreign('category_id')\

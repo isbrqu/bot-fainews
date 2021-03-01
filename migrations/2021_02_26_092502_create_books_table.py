@@ -8,7 +8,7 @@ class CreateBooksTable(Migration):
         Run the migrations.
         """
         with self.schema.create('books') as table:
-            table.increments('id')
+            table.primary('id')
             table.string('name')
             table.timestamps()
             table.integer('course_id').unsigned()
