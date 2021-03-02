@@ -1,11 +1,9 @@
-#!python3
 # -*- coding: utf-8 -*-
+from faibot import Faibot
+from pedco import MechanicalPedco
 import config
 import morfeo
 import time
-
-from pedco import MechanicalPedco
-from faibot import Faibot
 
 def fail(msg=None):
     end = '->\n' if msg else ''
