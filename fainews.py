@@ -2,9 +2,21 @@
 # -*- coding: utf-8 -*-
 import config
 import morfeo
+import time
 
 from pedco import MechanicalPedco
 from faibot import Faibot
+
+def fail(msg=None):
+    end = '->\n' if msg else ''
+    print(time.ctime(), end=end)
+    print(msg or '')
+    time.sleep(config.debug.time_fail)
+
+def succesful(msg=None):
+    if msg:
+        print(msg)
+    time.sleep(config.debug.time_succesful)
 
 if __name__ == '__main__':
 
@@ -18,7 +30,7 @@ if __name__ == '__main__':
             print('iniciando sesión...')
             while not mechanical.login():
                 print('no se pudo iniciar sesión')
-                morfeo.fail(f'title: {mechanical.title}')
+                fail(f'title: {mechanical.title}')
                 print('iniciando sesión...')
             print('sesión inicianda')
             while True:
@@ -29,9 +41,9 @@ if __name__ == '__main__':
                     new.enviado = True
                     new.save()
                 bot.check()
-                morfeo.succesful('a mimir...')
+                succesful('a mimir...')
         except Exception as e:
             if DEBUG:
                 raise e
-            morfeo.fail(e)
+            fail(e)
 
