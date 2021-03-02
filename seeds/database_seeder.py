@@ -1,6 +1,6 @@
 from orator.seeds import Seeder
-from .course_table_seeder import CourseTableSeeder
-from .type_resource_table_seeder import TypeResourceTableSeeder
+# from .course_table_seeder import CourseTableSeeder
+# from .type_resource_table_seeder import TypeResourceTableSeeder
 
 class DatabaseSeeder(Seeder):
 
@@ -8,6 +8,6 @@ class DatabaseSeeder(Seeder):
         """
         Run the database seeds.
         """
-        self.call(CourseTableSeeder)
-        self.call(TypeResourceTableSeeder)
+        # self.call(CourseTableSeeder)
+        # self.call(TypeResourceTableSeeder)
 
