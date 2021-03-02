@@ -8,8 +8,7 @@ class CreateCoursesTable(Migration):
         Run the migrations.
         """
         with self.schema.create('courses') as table:
-            table.integer('id').unsigned()
-            table.primary('id')
+            table.increments('id')
             table.string('name')
             table.string('alias')
             table.integer('category_id').unsigned()

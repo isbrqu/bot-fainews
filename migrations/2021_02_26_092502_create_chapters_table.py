@@ -8,8 +8,7 @@ class CreateChaptersTable(Migration):
         Run the migrations.
         """
         with self.schema.create('chapters') as table:
-            table.integer('id').unsigned()
-            table.primary('id')
+            table.increments('id')
             table.string('name')
             table.timestamp('created_at')
             table.integer('book_id').unsigned()

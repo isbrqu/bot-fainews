@@ -8,8 +8,7 @@ class CreateDiscussionsTable(Migration):
         Run the migrations.
         """
         with self.schema.create('discussions') as table:
-            table.integer('id').unsigned()
-            table.primary('id')
+            table.increments('id')
             table.string('name')
             table.timestamps()
             table.integer('forum_id').unsigned()

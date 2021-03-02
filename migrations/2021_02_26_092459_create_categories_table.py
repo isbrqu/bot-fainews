@@ -8,9 +8,8 @@ class CreateCategoriesTable(Migration):
         Run the migrations.
         """
         with self.schema.create('categories') as table:
-            table.integer('id').unsigned()
-            table.primary('id')
-            table.string('name')
+            table.increments('id')
+            table.medium_text('name')
             table.integer('category_id').unsigned()
             table.foreign('category_id')\
                 .references('id').on('categories')\

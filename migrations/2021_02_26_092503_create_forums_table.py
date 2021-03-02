@@ -8,8 +8,7 @@ class CreateForumsTable(Migration):
         Run the migrations.
         """
         with self.schema.create('forums') as table:
-            table.integer('id').unsigned()
-            table.primary('id')
+            table.increments('id')
             table.string('name')
             table.timestamps()
             table.integer('user_id').unsigned()
