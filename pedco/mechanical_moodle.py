@@ -1,6 +1,14 @@
 # from decouple import config
 import config
 from mechanicalsoup import StatefulBrowser
+from urllib.parse import parse_qs
+import urllib.parse as urlparse
+
+def _param(url, param):
+    parsed = urlparse.urlparse(url)
+    value = parse_qs(parsed.query).get(param)
+    return value[0] if value else ''
+
 
 class MechanicalMoodle(StatefulBrowser):
 
@@ -17,6 +25,13 @@ class MechanicalMoodle(StatefulBrowser):
     @property
     def logged_in(self):
         return not self.in_login
+
+    @property
+    def sesskey(self):
+        if not self._sesskey:
+            a = self.page.select_one("a[href*='sesskey']")
+            self._sesskey = _param(a.attrs.get('href'), 'sesskey')
+        return self._sesskey
 
     def open(self, url):
         success = False

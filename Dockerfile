@@ -1,4 +1,4 @@
-FROM python:3
+FROM python:3 AS fainews_bot
 
 WORKDIR /usr/src/app
 
