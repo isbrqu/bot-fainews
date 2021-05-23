@@ -16,7 +16,7 @@ DATABASES = {
 DATABASE = DATABASES['mysql']
 
 TELEGRAM = {
-    'bot_token': env('TELEGRAM_BOT_TOKEN'),
+    'token': env('TELEGRAM_TOKEN'),
     'my_chat_id': env('TELEGRAM_MY_CHAT'),
     'group_chat_id': env('TELEGRAM_GROUP_CHAT'),
     'parse_mode': telegram_lib.ParseMode.MARKDOWN_V2,
