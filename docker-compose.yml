@@ -2,7 +2,7 @@ services:
     mariadb:
         image: mariadb
         volumes:
-            - ~/code/mysql-data:/var/lib/mysql
+            - ./mysql-data:/var/lib/mysql
             - ./csv:/csv:rw
         environment:
             MYSQL_DATABASE: fainews
