@@ -1,0 +1,9 @@
+services:
+    fainews2:
+        image: fainews2_bot
+        command: python main.py
+        working_dir: /usr/src/app
+        volumes:
+            - .:/usr/src/app
+        env_file: .env
+
